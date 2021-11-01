@@ -34,67 +34,67 @@ import openfoodfacts.github.scrachx.openfood.network.services.AnalysisDataAPI
 sealed class Taxonomy<T>(val jsonUrl: String) {
     object Labels : Taxonomy<Label>(AnalysisDataAPI.LABELS_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<Label> =
-            repository.loadLabels(lastModifiedDate).await()
+            repository.loadLabels(lastModifiedDate)
     }
 
     object Countries : Taxonomy<Country>(AnalysisDataAPI.COUNTRIES_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<Country> =
-            repository.loadCountries(lastModifiedDate).await()
+            repository.loadCountries(lastModifiedDate)
     }
 
     object Categories : Taxonomy<Category>(AnalysisDataAPI.CATEGORIES_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<Category> =
-            repository.loadCategories(lastModifiedDate).await()
+            repository.loadCategories(lastModifiedDate)
     }
 
     object Additives : Taxonomy<Additive>(AnalysisDataAPI.ADDITIVES_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<Additive> =
-            repository.loadAdditives(lastModifiedDate).await()
+            repository.loadAdditives(lastModifiedDate)
     }
 
     object Ingredients : Taxonomy<Ingredient>(AnalysisDataAPI.INGREDIENTS_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<Ingredient> =
-            repository.loadIngredients(lastModifiedDate).await()
+            repository.loadIngredients(lastModifiedDate)
     }
 
     object Allergens : Taxonomy<Allergen>(AnalysisDataAPI.ALLERGENS_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<Allergen> =
-            repository.loadAllergens(lastModifiedDate).await()
+            repository.loadAllergens(lastModifiedDate)
     }
 
     object AnalysisTags : Taxonomy<AnalysisTag>(AnalysisDataAPI.ANALYSIS_TAG_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<AnalysisTag> =
-            repository.loadAnalysisTags(lastModifiedDate).await()
+            repository.loadAnalysisTags(lastModifiedDate)
     }
 
     object AnalysisTagConfigs : Taxonomy<AnalysisTagConfig>(AnalysisDataAPI.ANALYSIS_TAG_CONFIG_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<AnalysisTagConfig> =
-            repository.loadAnalysisTagConfigs(lastModifiedDate).await()
+            repository.loadAnalysisTagConfigs(lastModifiedDate)
     }
 
     object Tags : Taxonomy<Tag>(AnalysisDataAPI.TAGS_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<Tag> =
-            repository.loadTags(lastModifiedDate).await()
+            repository.loadTags(lastModifiedDate)
     }
 
     object InvalidBarcodes : Taxonomy<InvalidBarcode>(AnalysisDataAPI.INVALID_BARCODES_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<InvalidBarcode> =
-            repository.loadInvalidBarcodes(lastModifiedDate).await()
+            repository.loadInvalidBarcodes(lastModifiedDate)
     }
 
     object ProductStates : Taxonomy<States>(AnalysisDataAPI.STATES_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<States> =
-            repository.loadStates(lastModifiedDate).await()
+            repository.loadStates(lastModifiedDate)
     }
 
     object Stores : Taxonomy<Store>(AnalysisDataAPI.STORES_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<Store> =
-            repository.loadStores(lastModifiedDate).await()
+            repository.loadStores(lastModifiedDate)
     }
 
     object Brands : Taxonomy<Brand>(AnalysisDataAPI.BRANDS_JSON) {
         override suspend fun load(repository: ProductRepository, lastModifiedDate: Long): List<Brand> =
-            repository.loadBrands(lastModifiedDate).await()
+            repository.loadBrands(lastModifiedDate)
     }
 
     fun getLastDownloadTimeStampPreferenceId() = "taxonomy_lastDownloadTimeStamp_${this::class.simpleName}"

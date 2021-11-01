@@ -4,9 +4,13 @@ import android.util.Log
 import android.view.ViewStub
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import openfoodfacts.github.scrachx.openfood.R
 import openfoodfacts.github.scrachx.openfood.camera.CameraSource
 import openfoodfacts.github.scrachx.openfood.camera.CameraSourcePreview
@@ -51,7 +55,6 @@ class MlKitCameraView(private val activity: AppCompatActivity) {
         workflowModel?.markCameraFrozen()
         cameraSource?.setFrameProcessor(BarcodeProcessor(graphicOverlay!!, workflowModel!!))
         workflowModel?.setWorkflowState(WorkflowState.DETECTING)
-
     }
 
     fun startCameraPreview() {
@@ -113,37 +116,47 @@ class MlKitCameraView(private val activity: AppCompatActivity) {
     }
 
     private fun setUpWorkflowModel() {
-        workflowModel = ViewModelProvider(activity).get(WorkflowModel::class.java)
+        workflowModel = ViewModelProvider(activity)[WorkflowModel::class.java]
 
         // Observes the workflow state changes, if happens, update the overlay view indicators and
         // camera preview state.
-        workflowModel!!.workflowState.observe(activity, Observer { workflowState ->
-            if (workflowState == null) {
-                return@Observer
-            }
+        activity.lifecycleScope.launchWhenCreated {
+            activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-            when (workflowState) {
-                WorkflowState.DETECTING -> {
-                    promptChip?.isVisible = true
-                    promptChip?.setText(R.string.prompt_point_at_a_barcode)
-                    startCameraPreview()
+                // Collect workflow state
+                launch {
+                    workflowModel!!.workflowState.collectLatest { state ->
+                        when (state) {
+                            WorkflowState.DETECTING -> {
+                                promptChip?.isVisible = true
+                                promptChip?.setText(R.string.prompt_point_at_a_barcode)
+                                startCameraPreview()
+                            }
+                            WorkflowState.CONFIRMING -> {
+                                promptChip?.isVisible = true
+                                promptChip?.setText(R.string.prompt_move_camera_closer)
+                                startCameraPreview()
+                            }
+                            WorkflowState.DETECTED -> stopCameraPreview()
+                            WorkflowState.NOT_STARTED -> promptChip?.isVisible = false
+                        }
+
+                    }
+
                 }
-                WorkflowState.CONFIRMING -> {
-                    promptChip?.isVisible = true
-                    promptChip?.setText(R.string.prompt_move_camera_closer)
-                    startCameraPreview()
+
+                // Route barcode changes to the activity
+                launch {
+                    workflowModel!!.detectedBarcode.collectLatest { barcode ->
+                        barcode.rawValue?.let {
+                            barcodeScannedCallback?.invoke(it)
+                            Log.i(LOG_TAG, "barcode =" + barcode.rawValue)
+                        }
+                    }
                 }
-                WorkflowState.DETECTED -> stopCameraPreview()
-                else -> promptChip?.isVisible = false
-            }
 
-        })
-
-        workflowModel?.detectedBarcode?.observe(activity, { barcode ->
-            barcode?.rawValue?.let {
-                barcodeScannedCallback?.invoke(it)
-                Log.i(LOG_TAG, "barcode =" + barcode.rawValue)
             }
-        })
+        }
+
     }
 }

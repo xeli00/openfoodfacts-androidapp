@@ -68,9 +68,7 @@ class ProductCompareViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentLanguage(): String {
-        return localeManager.getLanguage()
-    }
+    fun getCurrentLanguage() = localeManager.getLanguage()
 
     private fun isProductAlreadyAdded(barcode: String): Boolean {
         return _productsFlow.value.any { it.product.code == barcode }
@@ -88,8 +86,8 @@ class ProductCompareViewModel @Inject constructor(
         return product
             .additivesTags
             .map { tag ->
-                productRepository.getAdditiveByTagAndLanguageCode(tag, localeManager.getLanguage()).await()
-                    .takeUnless { it.isNull } ?: productRepository.getAdditiveByTagAndDefaultLanguageCode(tag).await()
+                productRepository.getAdditive(tag, localeManager.getLanguage())
+                    .takeUnless { it.isNull } ?: productRepository.getAdditive(tag)
             }
             .filter { it.isNotNull }
     }

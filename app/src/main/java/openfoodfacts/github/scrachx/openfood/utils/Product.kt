@@ -72,7 +72,7 @@ fun Product?.getImageGradeDrawable(context: Context, vertical: Boolean = false):
 }
 
 @DrawableRes
-private fun getResourceFromNova(novaGroup: String?) = when (novaGroup) {
+fun getResourceFromNova(novaGroup: String?) = when (novaGroup) {
     "1" -> R.drawable.ic_nova_group_1
     "2" -> R.drawable.ic_nova_group_2
     "3" -> R.drawable.ic_nova_group_3

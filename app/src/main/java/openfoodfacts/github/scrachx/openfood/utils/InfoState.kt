@@ -18,8 +18,8 @@ package openfoodfacts.github.scrachx.openfood.utils
 /**
  * Created by Lobster on 10.03.18.
  */
-sealed class ProductInfoState<out T> {
-    object Loading : ProductInfoState<Nothing>()
-    object Empty : ProductInfoState<Nothing>()
-    data class Data<T>(val data: T) : ProductInfoState<T>()
+sealed class InfoState<out T> {
+    object Loading : InfoState<Nothing>()
+    object Empty : InfoState<Nothing>()
+    data class Data<T>(val data: T) : InfoState<T>()
 }

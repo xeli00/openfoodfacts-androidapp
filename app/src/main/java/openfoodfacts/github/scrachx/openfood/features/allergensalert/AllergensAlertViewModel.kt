@@ -60,7 +60,7 @@ class AllergensAlertViewModel @Inject constructor(
     fun addAllergen(allergen: AllergenName) {
         viewModelScope.launch {
             withContext(coroutineDispatchers.io()) {
-                productRepository.setAllergenEnabled(allergen.allergenTag, true).await()
+                productRepository.setAllergenEnabled(allergen.allergenTag, true)
                 matomoAnalytics.trackEvent(AnalyticsEvent.AllergenAlertCreated(allergen.allergenTag))
             }
             refreshAllergens()
@@ -70,7 +70,7 @@ class AllergensAlertViewModel @Inject constructor(
     fun removeAllergen(allergen: AllergenName) {
         viewModelScope.launch {
             withContext(coroutineDispatchers.io()) {
-                productRepository.setAllergenEnabled(allergen.allergenTag, false).await()
+                productRepository.setAllergenEnabled(allergen.allergenTag, false)
             }
             refreshAllergens()
         }
@@ -78,8 +78,7 @@ class AllergensAlertViewModel @Inject constructor(
 
     private suspend fun refreshAllergens() {
         val enabledAllergens = withContext(coroutineDispatchers.io()) {
-            productRepository.getAllergensByEnabledAndLanguageCode(true, localeManager.getLanguage())
-                .await()
+            productRepository.getAllergenNames(true, localeManager.getLanguage())
                 .sortedBy { it.name }
         }
         _viewStateFlow.emit(_viewStateFlow.value.copy(allergens = enabledAllergens))
@@ -106,8 +105,7 @@ class AllergensAlertViewModel @Inject constructor(
     }
 
     private suspend fun getNotEnabledAllergens() = withContext(coroutineDispatchers.io()) {
-        productRepository.getAllergensByEnabledAndLanguageCode(false, localeManager.getLanguage())
-            .await()
+        productRepository.getAllergenNames(false, localeManager.getLanguage())
             .filter { it.allergenTag != "en:none" }
             .sortedBy { it.name }
     }

@@ -22,7 +22,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.withContext
 import openfoodfacts.github.scrachx.openfood.models.entities.category.Category
 import openfoodfacts.github.scrachx.openfood.models.entities.category.CategoryName
@@ -55,9 +54,9 @@ class CategoryFragmentViewModel @Inject constructor(
             showProgress.postValue(true)
             val categoryList = try {
                 withContext(Dispatchers.IO) {
-                    productRepository.getAllCategoriesByLanguageCode(localeManager.getLanguage()).await()
+                    productRepository.getLocalCategories(localeManager.getLanguage())
                         .takeUnless { it.isEmpty() }
-                        ?: productRepository.getAllCategoriesByDefaultLanguageCode().await()
+                        ?: productRepository.getLocalCategories()
                             .takeUnless { it.isEmpty() }
                         ?: extractCategoriesNames(productRepository.getCategories())
                 }

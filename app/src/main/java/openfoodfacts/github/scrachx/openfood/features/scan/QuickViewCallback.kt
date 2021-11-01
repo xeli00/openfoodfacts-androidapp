@@ -3,10 +3,12 @@ package openfoodfacts.github.scrachx.openfood.features.scan
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.mikepenz.iconics.dsl.ExperimentalIconicsDSL
 import openfoodfacts.github.scrachx.openfood.R
 import openfoodfacts.github.scrachx.openfood.analytics.AnalyticsEvent
 
-internal class QuickViewCallback(
+@ExperimentalIconicsDSL
+internal class QuickViewCallback constructor(
     private val activity: ContinuousScanActivity
 ) : BottomSheetBehavior.BottomSheetCallback() {
     private var previousSlideOffset = 0f

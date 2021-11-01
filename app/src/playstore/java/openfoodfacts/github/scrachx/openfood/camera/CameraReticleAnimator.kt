@@ -24,14 +24,16 @@ class CameraReticleAnimator(graphicOverlay: GraphicOverlay) {
     private val animatorSet: AnimatorSet
 
     init {
-        val rippleFadeInAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(DURATION_RIPPLE_FADE_IN_MS).apply {
+        val rippleFadeInAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = DURATION_RIPPLE_FADE_IN_MS
             addUpdateListener { animation ->
                 rippleAlphaScale = animation.animatedValue as Float
                 graphicOverlay.postInvalidate()
             }
         }
 
-        val rippleFadeOutAnimator = ValueAnimator.ofFloat(1f, 0f).setDuration(DURATION_RIPPLE_FADE_OUT_MS).apply {
+        val rippleFadeOutAnimator = ValueAnimator.ofFloat(1f, 0f).apply {
+            duration = DURATION_RIPPLE_FADE_OUT_MS
             startDelay = START_DELAY_RIPPLE_FADE_OUT_MS
             addUpdateListener { animation ->
                 rippleAlphaScale = animation.animatedValue as Float
@@ -39,7 +41,8 @@ class CameraReticleAnimator(graphicOverlay: GraphicOverlay) {
             }
         }
 
-        val rippleExpandAnimator = ValueAnimator.ofFloat(0f, 1f).setDuration(DURATION_RIPPLE_EXPAND_MS).apply {
+        val rippleExpandAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = DURATION_RIPPLE_EXPAND_MS
             startDelay = START_DELAY_RIPPLE_EXPAND_MS
             interpolator = FastOutSlowInInterpolator()
             addUpdateListener { animation ->
@@ -48,7 +51,8 @@ class CameraReticleAnimator(graphicOverlay: GraphicOverlay) {
             }
         }
 
-        val rippleStrokeWidthShrinkAnimator = ValueAnimator.ofFloat(1f, 0.5f).setDuration(DURATION_RIPPLE_STROKE_WIDTH_SHRINK_MS).apply {
+        val rippleStrokeWidthShrinkAnimator = ValueAnimator.ofFloat(1f, 0.5f).apply {
+            duration = DURATION_RIPPLE_STROKE_WIDTH_SHRINK_MS
             startDelay = START_DELAY_RIPPLE_STROKE_WIDTH_SHRINK_MS
             interpolator = FastOutSlowInInterpolator()
             addUpdateListener { animation ->
@@ -57,7 +61,8 @@ class CameraReticleAnimator(graphicOverlay: GraphicOverlay) {
             }
         }
 
-        val fakeAnimatorForRestartDelay = ValueAnimator.ofInt(0, 0).setDuration(DURATION_RESTART_DORMANCY_MS).apply {
+        val fakeAnimatorForRestartDelay = ValueAnimator.ofInt(0, 0).apply {
+            duration = DURATION_RESTART_DORMANCY_MS
             startDelay = START_DELAY_RESTART_DORMANCY_MS
         }
 

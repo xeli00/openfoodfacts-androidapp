@@ -11,24 +11,24 @@ interface RobotoffAPI {
     }
 
     @GET("$API_P/questions/{barcode}")
-    fun getProductQuestions(
+    suspend fun getProductQuestions(
             @Path("barcode") barcode: String,
             @Query("lang") langCode: String,
             @Query("count") count: Int
-    ): Single<QuestionsState>
+    ): QuestionsState
 
     @FormUrlEncoded
     @POST("$API_P/insights/annotate")
-    fun annotateInsight(
+    suspend fun annotateInsight(
             @Field("insight_id") insightId: String,
             @Field("annotation") annotation: Int
-    ): Single<AnnotationResponse>
+    ): AnnotationResponse
 
     @FormUrlEncoded
     @POST("$API_P/insights/annotate")
-    fun annotateInsight(
+    suspend fun annotateInsight(
             @Field("insight_id") insightId: String,
             @Field("annotation") annotation: Int,
             @Header("Authorization") auth: String
-    ): Single<AnnotationResponse>
+    ): AnnotationResponse
 }

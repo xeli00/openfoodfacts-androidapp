@@ -22,11 +22,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.Gravity.CENTER
+import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.TextView.GONE
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -35,16 +38,17 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.zxing.ResultPoint
 import com.google.zxing.client.android.BeepManager
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.DefaultDecoderFactory
-import com.mikepenz.iconics.IconicsColor
-import com.mikepenz.iconics.IconicsDrawable
-import com.mikepenz.iconics.IconicsSize
+import com.mikepenz.iconics.dsl.ExperimentalIconicsDSL
+import com.mikepenz.iconics.dsl.iconicsDrawable
 import com.mikepenz.iconics.typeface.library.googlematerial.GoogleMaterial
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,6 +56,7 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 import openfoodfacts.github.scrachx.openfood.AppFlavors.OFF
 import openfoodfacts.github.scrachx.openfood.AppFlavors.isFlavors
 import openfoodfacts.github.scrachx.openfood.BuildConfig
@@ -66,9 +71,8 @@ import openfoodfacts.github.scrachx.openfood.features.product.view.IProductView
 import openfoodfacts.github.scrachx.openfood.features.product.view.ProductViewActivity.ShowIngredientsAction
 import openfoodfacts.github.scrachx.openfood.features.product.view.ProductViewFragment
 import openfoodfacts.github.scrachx.openfood.features.product.view.ingredients_analysis.IngredientsWithTagDialogFragment
-import openfoodfacts.github.scrachx.openfood.features.product.view.summary.AbstractSummaryProductPresenter
 import openfoodfacts.github.scrachx.openfood.features.product.view.summary.IngredientAnalysisTagsAdapter
-import openfoodfacts.github.scrachx.openfood.features.product.view.summary.SummaryProductPresenter
+import openfoodfacts.github.scrachx.openfood.features.product.view.summary.SummaryProductViewModel
 import openfoodfacts.github.scrachx.openfood.features.shared.BaseActivity
 import openfoodfacts.github.scrachx.openfood.listeners.CommonBottomListenerInstaller.installBottomNavigation
 import openfoodfacts.github.scrachx.openfood.listeners.CommonBottomListenerInstaller.selectNavigationItem
@@ -78,8 +82,6 @@ import openfoodfacts.github.scrachx.openfood.models.InvalidBarcodeDao
 import openfoodfacts.github.scrachx.openfood.models.Product
 import openfoodfacts.github.scrachx.openfood.models.entities.OfflineSavedProduct
 import openfoodfacts.github.scrachx.openfood.models.entities.OfflineSavedProductDao
-import openfoodfacts.github.scrachx.openfood.models.entities.allergen.AllergenHelper
-import openfoodfacts.github.scrachx.openfood.models.entities.allergen.AllergenName
 import openfoodfacts.github.scrachx.openfood.models.entities.analysistagconfig.AnalysisTagConfig
 import openfoodfacts.github.scrachx.openfood.models.eventbus.ProductNeedsRefreshEvent
 import openfoodfacts.github.scrachx.openfood.network.ApiFields.StateTags
@@ -94,10 +96,13 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@ExperimentalIconicsDSL
 @AndroidEntryPoint
 class ContinuousScanActivity : BaseActivity(), IProductView {
     private var _binding: ActivityContinuousScanBinding? = null
     internal val binding get() = _binding!!
+
+    private val viewModel: ContinuousScanActivityViewModel by viewModels()
 
     @Inject
     lateinit var client: OpenFoodAPIClient
@@ -126,11 +131,10 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
     @Inject
     lateinit var scannerPrefsRepository: ScannerPreferencesRepository
 
-    private lateinit var beepManager: BeepManager
+    private val beepManager by lazy { BeepManager(this) }
     internal lateinit var quickViewBehavior: BottomSheetBehavior<LinearLayout>
     private val barcodeInputListener = BarcodeInputListener()
 
-    private val barcodeScanCallback = BarcodeScannerCallback()
 
     private val bottomSheetCallback by lazy { QuickViewCallback(this) }
 
@@ -160,7 +164,6 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
     internal var productViewFragment: ProductViewFragment? = null
 
     private lateinit var cameraSettingMenu: PopupMenu
-    private var summaryProductPresenter: SummaryProductPresenter? = null
 
     private val productActivityResultLauncher = registerForActivityResult(ProductEditActivity.EditProductContract())
     { result -> if (result) lastBarcode?.let { setShownProduct(it) } }
@@ -171,12 +174,12 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
      * @param barcode barcode to serach
      */
     @Suppress("unused")
-    internal fun showProduct(barcode: String) {
+    internal fun showProductTest(barcode: String) {
         productShowing = true
         binding.barcodeScanner.isVisible = false
         binding.barcodeScanner.pause()
         mlKitView.stopCameraPreview()
-        binding.imageForScreenshotGenerationOnly.visibility = View.VISIBLE
+        binding.imageForScreenshotGenerationOnly.visibility = VISIBLE
         setShownProduct(barcode)
     }
 
@@ -193,18 +196,13 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
 
         // First, try to show if we have an offline saved product in the db
         offlineSavedProduct = offlineProductService.getOfflineProductByBarcode(barcode).also { product ->
-            product?.let { showOfflineSavedDetails(it) }
+            product?.let { showOfflineProduct(it) }
         }
 
         // Then query the online db
         productDisp = lifecycleScope.launch(Dispatchers.Main) {
 
-            hideAllViews()
-            quickViewBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            binding.quickView.setOnClickListener(null)
-            binding.quickViewProgress.visibility = View.VISIBLE
-            binding.quickViewProgressText.visibility = View.VISIBLE
-            binding.quickViewProgressText.text = getString(R.string.loading_product, barcode)
+            showLoadingProduct(barcode)
 
             val productState = try {
                 client.getProductStateFull(barcode, userAgent = Utils.HEADER_USER_AGENT_SCAN)
@@ -242,10 +240,11 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
                 tryDisplayOffline(offlineSavedProduct, barcode, R.string.product_not_found)
             } else {
                 val product = productState.product!!
+                viewModel.refreshProductState(productState)
                 this@ContinuousScanActivity.product = product
 
                 // Add product to scan history
-                productDisp = lifecycleScope.launch { client.addToHistory(product) }
+                viewModel.addToHistory(product)
 
                 showAllViews()
 
@@ -253,41 +252,18 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
                     it.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     it.background = ContextCompat.getDrawable(this@ContinuousScanActivity, R.drawable.rounded_quick_view_text)
                     it.setText(if (product.isProductIncomplete()) R.string.product_not_complete else R.string.scan_tooltip)
-                    it.visibility = View.VISIBLE
+                    it.visibility = VISIBLE
                 }
 
                 setupSummary(product)
                 quickViewBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-                showProductFullScreen()
+                expandQuickView()
                 binding.quickViewProductNotFound.visibility = View.GONE
                 binding.quickViewProductNotFoundButton.visibility = View.GONE
 
-                // Set product name, prefer offline
-                if (offlineSavedProduct != null && !offlineSavedProduct?.name.isNullOrEmpty()) {
-                    binding.quickViewName.text = offlineSavedProduct!!.name
-                } else if (product.productName == null || product.productName.isEmpty()) {
-                    binding.quickViewName.setText(R.string.productNameNull)
-                } else {
-                    binding.quickViewName.text = product.productName
-                }
+                setupQuickView(product)
 
-                // Set product additives
-                val addTags = product.additivesTags
-                binding.quickViewAdditives.text = when {
-                    addTags.isNotEmpty() -> resources.getQuantityString(R.plurals.productAdditives, addTags.size, addTags.size)
-                    StateTags.INGREDIENTS_COMPLETED in product.statesTags -> getString(R.string.productAdditivesNone)
-                    else -> getString(R.string.productAdditivesUnknown)
-                }
-
-                // Show nutriscore in quickView only if app flavour is OFF and the product has one
-                quickViewCheckNutriScore(product)
-
-                // Show nova group in quickView only if app flavour is OFF and the product has one
-                quickViewCheckNova(product)
-
-                // If the product has an ecoscore, show it instead of the CO2 icon
-                quickViewCheckEcoScore(product)
 
                 // Create the product view fragment and add it to the layout
                 val newProductViewFragment = ProductViewFragment.newInstance(productState)
@@ -301,99 +277,165 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
         }
     }
 
-    private fun quickViewCheckNutriScore(product: Product) = if (isFlavors(OFF)) {
-        binding.quickViewNutriScore.visibility = View.VISIBLE
-        binding.quickViewNutriScore.setImageResource(product.getNutriScoreResource())
-    } else {
-        binding.quickViewNutriScore.visibility = View.GONE
+    private fun setupQuickView(product: Product) {
+        // Set product name, prefer offline
+        when {
+            offlineSavedProduct != null && !offlineSavedProduct?.name.isNullOrEmpty() -> {
+                binding.quickViewName.text = offlineSavedProduct!!.name
+            }
+            product.productName != null || product.productName.isNotEmpty() -> {
+                binding.quickViewName.text = product.productName
+            }
+            else -> {
+                binding.quickViewName.setText(R.string.productNameNull)
+            }
+        }
+
+        // Set product additives
+        val additives = product.additivesTags
+
+        binding.quickViewAdditives.text = when {
+            additives.isNotEmpty() -> resources.getQuantityString(R.plurals.productAdditives, additives.size, additives.size)
+            StateTags.INGREDIENTS_COMPLETED in product.statesTags -> getString(R.string.productAdditivesNone)
+            else -> getString(R.string.productAdditivesUnknown)
+        }
+
+        // Show nutriscore in quickView only if app flavour is OFF and the product has one
+        showNutriScore(product)
+
+        // Show nova group in quickView only if app flavour is OFF and the product has one
+        showNova(product)
+
+        // If the product has an ecoscore, show it instead of the CO2 icon
+        showEcoscore(product)
     }
 
-    private fun quickViewCheckNova(product: Product) = if (isFlavors(OFF)) {
-        binding.quickViewNovaGroup.visibility = View.VISIBLE
-        binding.quickViewAdditives.visibility = View.VISIBLE
-        binding.quickViewNovaGroup.setImageResource(product.getNovaGroupResource())
-    } else {
-        binding.quickViewNovaGroup.visibility = View.GONE
+    private fun showLoadingProduct(barcode: String) {
+        hideAllViews()
+        quickViewBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        binding.quickView.setOnClickListener(null)
+        binding.quickViewProgress.visibility = VISIBLE
+        binding.quickViewProgressText.visibility = VISIBLE
+        binding.quickViewProgressText.text = getString(R.string.loading_product, barcode)
     }
 
-    private fun quickViewCheckEcoScore(product: Product) = if (isFlavors(OFF)) {
-        binding.quickViewEcoscoreIcon.setImageResource(product.getEcoscoreResource())
-        binding.quickViewEcoscoreIcon.visibility = View.VISIBLE
-    } else {
-        binding.quickViewEcoscoreIcon.visibility = View.GONE
+    private fun showNutriScore(product: Product) {
+        if (isFlavors(OFF)) {
+            binding.quickViewNutriScore.visibility = VISIBLE
+            binding.quickViewNutriScore.setImageResource(product.getNutriScoreResource())
+        } else {
+            binding.quickViewNutriScore.visibility = View.GONE
+        }
+    }
+
+    private fun showNova(product: Product) {
+        if (isFlavors(OFF)) {
+            binding.quickViewNovaGroup.visibility = VISIBLE
+            binding.quickViewAdditives.visibility = VISIBLE
+            binding.quickViewNovaGroup.setImageResource(product.getNovaGroupResource())
+        } else {
+            binding.quickViewNovaGroup.visibility = View.GONE
+        }
+    }
+
+    private fun showEcoscore(product: Product) {
+        if (isFlavors(OFF)) {
+            binding.quickViewEcoscoreIcon.setImageResource(product.getEcoscoreResource())
+            binding.quickViewEcoscoreIcon.visibility = VISIBLE
+        } else {
+            binding.quickViewEcoscoreIcon.visibility = View.GONE
+        }
+    }
+
+    private val summaryProductViewModel: SummaryProductViewModel by viewModels()
+
+    @ExperimentalIconicsDSL
+    private fun setupSummary(product: Product) {
+        binding.callToActionImageProgress.visibility = VISIBLE
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                launch {
+                    summaryProductViewModel.allergens.collectLatest { data ->
+                        binding.callToActionImageProgress.visibility = View.GONE
+                        if (data.isEmpty()) return@collectLatest
+
+                        val warningDrawable = iconicsDrawable(GoogleMaterial.Icon.gmd_warning) {
+                            colorInt(ContextCompat.getColor(this@ContinuousScanActivity, R.color.white))
+                            sizeDp(24)
+                        }
+
+                        binding.txtProductCallToAction.setCompoundDrawablesWithIntrinsicBounds(warningDrawable, null, null, null)
+                        binding.txtProductCallToAction.background =
+                            ContextCompat.getDrawable(this@ContinuousScanActivity, R.drawable.rounded_quick_view_text_warn)
+                        binding.txtProductCallToAction.text = if (data.incomplete) {
+                            getString(R.string.product_incomplete_message)
+                        } else {
+                            "${getString(R.string.product_allergen_prompt)}\n${data.allergens.joinToString(", ")}"
+                        }
+                    }
+                }
+
+                launch {
+                    summaryProductViewModel.analysisTagsState.collectLatest { state ->
+                        when (state) {
+                            InfoState.Loading -> {
+                                // TODO
+                            }
+                            InfoState.Empty -> {
+                                binding.quickViewTags.visibility = View.GONE
+                                analysisTagsEmpty = true
+                            }
+                            is InfoState.Data -> {
+                                binding.quickViewTags.visibility = VISIBLE
+                                analysisTagsEmpty = false
+
+                                binding.quickViewTags.adapter = IngredientAnalysisTagsAdapter(
+                                    this@ContinuousScanActivity,
+                                    state.data,
+                                    picasso,
+                                    sharedPreferences
+                                ).apply adapter@{
+                                    setOnItemClickListener { view, _ ->
+                                        IngredientsWithTagDialogFragment.newInstance(
+                                            product,
+                                            view.getTag(R.id.analysis_tag_config) as AnalysisTagConfig
+                                        ).run {
+                                            onDismissListener = { filterVisibleTags() }
+                                            show(supportFragmentManager, "fragment_ingredients_with_tag")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+            }
+        }
+
+
+        try {
+            // Refresh allergens
+            summaryProductViewModel.refreshAllergens(product)
+        } catch (err: Exception) {
+            // TODO: Is this useful??
+            binding.callToActionImageProgress.visibility = View.GONE
+        }
+
+        // Compute analysis tags for product
+        summaryProductViewModel.refreshAnalysisTags(product)
     }
 
     private fun tryDisplayOffline(
         offlineSavedProduct: OfflineSavedProduct?,
         barcode: String,
         @StringRes errorMsg: Int
-    ) = if (offlineSavedProduct != null) showOfflineSavedDetails(offlineSavedProduct)
-    else showProductNotFound(getString(errorMsg, barcode))
-
-    private fun setupSummary(product: Product) {
-        binding.callToActionImageProgress.visibility = View.VISIBLE
-
-        summaryProductPresenter = SummaryProductPresenter(localeManager.getLanguage(), product, object : AbstractSummaryProductPresenter() {
-            override fun showAllergens(allergens: List<AllergenName>) {
-                val data = AllergenHelper.computeUserAllergen(product, allergens)
-                binding.callToActionImageProgress.visibility = View.GONE
-                if (data.isEmpty()) return
-                val iconicsDrawable = IconicsDrawable(this@ContinuousScanActivity, GoogleMaterial.Icon.gmd_warning)
-                    .color(IconicsColor.colorInt(ContextCompat.getColor(this@ContinuousScanActivity, R.color.white)))
-                    .size(IconicsSize.dp(24))
-                binding.txtProductCallToAction.setCompoundDrawablesWithIntrinsicBounds(iconicsDrawable, null, null, null)
-                binding.txtProductCallToAction.background = ContextCompat.getDrawable(this@ContinuousScanActivity, R.drawable.rounded_quick_view_text_warn)
-                binding.txtProductCallToAction.text = if (data.incomplete) {
-                    getString(R.string.product_incomplete_message)
-                } else {
-                    "${getString(R.string.product_allergen_prompt)}\n${data.allergens.joinToString(", ")}"
-                }
-            }
-
-            override suspend fun showAnalysisTags(state: ProductInfoState<List<AnalysisTagConfig>>) = withContext(Dispatchers.Main) {
-                when (state) {
-                    is ProductInfoState.Data -> {
-                        binding.quickViewTags.visibility = View.VISIBLE
-                        analysisTagsEmpty = false
-                        val adapter = IngredientAnalysisTagsAdapter(
-                            this@ContinuousScanActivity,
-                            state.data,
-                            picasso,
-                            sharedPreferences
-                        ).apply adapter@{
-                            setOnItemClickListener { view: View, _ ->
-                                IngredientsWithTagDialogFragment.newInstance(
-                                    product,
-                                    view.getTag(R.id.analysis_tag_config) as AnalysisTagConfig
-                                ).run {
-                                    onDismissListener = { this@adapter.filterVisibleTags() }
-                                    show(supportFragmentManager, "fragment_ingredients_with_tag")
-                                }
-                            }
-                        }
-
-                        binding.quickViewTags.adapter = adapter
-                    }
-                    is ProductInfoState.Empty -> {
-                        binding.quickViewTags.visibility = View.GONE
-                        analysisTagsEmpty = true
-                    }
-                    ProductInfoState.Loading -> {
-                        // TODO
-                    }
-                }
-
-            }
-        }, productRepository).also {
-            lifecycleScope.launch {
-                try {
-                    it.loadAllergens()
-                } catch (err: Exception) {
-                    binding.callToActionImageProgress.visibility = View.GONE
-                }
-            }
-            lifecycleScope.launch { it.loadAnalysisTags() }
-        }
+    ) {
+        if (offlineSavedProduct != null) showOfflineProduct(offlineSavedProduct)
+        else showProductNotFound(getString(errorMsg, barcode))
     }
 
 
@@ -402,12 +444,29 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
         quickViewBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         binding.quickView.setOnClickListener { lastBarcode?.let { navigateToProductAddition(it) } }
         binding.quickViewProductNotFound.text = text
-        binding.quickViewProductNotFound.visibility = View.VISIBLE
-        binding.quickViewProductNotFoundButton.visibility = View.VISIBLE
+        binding.quickViewProductNotFound.visibility = VISIBLE
+        binding.quickViewProductNotFoundButton.visibility = VISIBLE
         binding.quickViewProductNotFoundButton.setOnClickListener { lastBarcode?.let { navigateToProductAddition(it) } }
     }
 
-    private fun showProductFullScreen() {
+    private fun showOfflineProduct(savedProduct: OfflineSavedProduct) {
+        showAllViews()
+
+        binding.quickViewName.text = savedProduct.name
+            ?.takeUnless { it.isEmpty() }
+            ?: getString(R.string.productNameNull)
+
+        binding.txtProductCallToAction.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+        binding.txtProductCallToAction.background = ContextCompat.getDrawable(this@ContinuousScanActivity, R.drawable.rounded_quick_view_text)
+        binding.txtProductCallToAction.setText(R.string.product_not_complete)
+        binding.txtProductCallToAction.visibility = VISIBLE
+
+        // Disable sliding up
+        binding.quickViewSlideUpIndicator.visibility = View.GONE
+        quickViewBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun expandQuickView() {
         quickViewBehavior.peekHeight = bottomSheetCallback.peekLarge
         binding.quickView.let {
             it.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -416,35 +475,20 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
         }
     }
 
-    private fun showOfflineSavedDetails(savedProduct: OfflineSavedProduct) {
-        showAllViews()
-        binding.quickViewName.text = savedProduct.name?.takeUnless { it.isEmpty() } ?: getString(R.string.productNameNull)
-        binding.txtProductCallToAction.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-        binding.txtProductCallToAction.background = ContextCompat.getDrawable(this@ContinuousScanActivity, R.drawable.rounded_quick_view_text)
-        binding.txtProductCallToAction.setText(R.string.product_not_complete)
-        binding.txtProductCallToAction.visibility = View.VISIBLE
-        binding.quickViewSlideUpIndicator.visibility = View.GONE
-        quickViewBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
-    private fun navigateToProductAddition(productBarcode: String) {
-        navigateToProductAddition(Product().apply {
-            code = productBarcode
+    private fun navigateToProductAddition(barcode: String) {
+        productActivityResultLauncher.launch(Product().apply {
+            code = barcode
             lang = localeManager.getLanguage()
         })
     }
 
-    private fun navigateToProductAddition(product: Product?) {
-        productActivityResultLauncher.launch(product)
-    }
-
     private fun showAllViews() {
-        binding.quickViewSlideUpIndicator.visibility = View.VISIBLE
-        binding.quickViewName.visibility = View.VISIBLE
-        binding.frameLayout.visibility = View.VISIBLE
-        binding.quickViewAdditives.visibility = View.VISIBLE
+        binding.quickViewSlideUpIndicator.visibility = VISIBLE
+        binding.quickViewName.visibility = VISIBLE
+        binding.frameLayout.visibility = VISIBLE
+        binding.quickViewAdditives.visibility = VISIBLE
         if (!analysisTagsEmpty) {
-            binding.quickViewTags.visibility = View.VISIBLE
+            binding.quickViewTags.visibility = VISIBLE
         } else {
             binding.quickViewTags.visibility = View.GONE
         }
@@ -481,8 +525,6 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
         binding.toggleFlash.setOnClickListener { toggleFlash() }
         binding.buttonMore.setOnClickListener { showMoreSettings() }
 
-        actionBar?.hide()
-
         // Cannot set in xml because attribute is only API > 21
         binding.quickViewTags.isNestedScrollingEnabled = false
 
@@ -496,15 +538,13 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
 
                 hideAllViews()
                 quickViewBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                binding.quickViewSearchByBarcode.visibility = View.VISIBLE
+                binding.quickViewSearchByBarcode.visibility = VISIBLE
                 binding.quickViewSearchByBarcode.requestFocus()
             }.subscribe()
 
+        // Setup and initial state
         quickViewBehavior = BottomSheetBehavior.from(binding.quickView)
-
-        // Initial state
         quickViewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
         quickViewBehavior.addBottomSheetCallback(bottomSheetCallback)
 
         beepActive = scannerPrefsRepository.getRingPref()
@@ -514,7 +554,8 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
 
         // Setup barcode scanner
         if (!useMLScanner) {
-            binding.barcodeScanner.visibility = View.VISIBLE
+            binding.barcodeScanner.visibility = VISIBLE
+
             binding.cameraPreviewViewStub.isVisible = false
             binding.barcodeScanner.barcodeView.decoderFactory = DefaultDecoderFactory(ScannerPreferencesRepository.BARCODE_FORMATS)
             binding.barcodeScanner.setStatusText(null)
@@ -528,17 +569,16 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
             }
 
             // Start continuous scanner
-            binding.barcodeScanner.decodeContinuous(barcodeScanCallback)
-            beepManager = BeepManager(this)
+            binding.barcodeScanner.decodeContinuous(BarcodeScannerCallback { barcodeCallback(it.text) })
         } else {
-            binding.barcodeScanner.isVisible = false
+            binding.barcodeScanner.visibility = GONE
+
             mlKitView.attach(binding.cameraPreviewViewStub, cameraState, flashActive, autoFocusActive)
             mlKitView.onOverlayClickListener = {
                 quickViewBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
-            mlKitView.barcodeScannedCallback = {
-                mlBarcodeCallback(it)
-            }
+
+            mlKitView.barcodeScannedCallback = { barcodeCallback(it) }
         }
 
         binding.quickViewSearchByBarcode.setOnEditorActionListener(barcodeInputListener)
@@ -548,7 +588,7 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
         setupPopupMenu()
     }
 
-    private fun mlBarcodeCallback(barcodeValue: String) {
+    private fun barcodeCallback(barcodeValue: String) {
         hintBarcodeDisp?.dispose()
 
         // Prevent duplicate scans
@@ -557,11 +597,16 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
         val invalidBarcode = daoSession.invalidBarcodeDao.unique {
             where(InvalidBarcodeDao.Properties.Barcode.eq(barcodeValue))
         }
-
         // Scanned barcode is in the list of invalid barcodes, do nothing
         if (invalidBarcode != null) return
 
-        lastBarcode = barcodeValue.also { if (!isFinishing) setShownProduct(it) }
+        if (beepActive) beepManager.playBeepSound()
+
+        lastBarcode = barcodeValue
+        if (!isFinishing) {
+            setShownProduct(barcodeValue)
+            matomoAnalytics.trackEvent(AnalyticsEvent.ScannedBarcode(barcodeValue))
+        }
     }
 
     override fun onStart() {
@@ -666,7 +711,9 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
         }
         scannerPrefsRepository.saveCameraPref(CameraState.fromInt(cameraState))
 
-        if (!useMLScanner) {
+        if (useMLScanner) {
+            mlKitView.toggleCamera()
+        } else {
             val settings = binding.barcodeScanner.barcodeView.cameraSettings
             if (binding.barcodeScanner.barcodeView.isPreviewActive) {
                 binding.barcodeScanner.pause()
@@ -674,8 +721,6 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
             settings.requestedCameraId = cameraState
             binding.barcodeScanner.barcodeView.cameraSettings = settings
             binding.barcodeScanner.resume()
-        } else {
-            mlKitView.toggleCamera()
         }
     }
 
@@ -736,7 +781,7 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
                     hintBarcodeDisp?.dispose()
                     binding.quickView.setOnClickListener(null)
                     binding.quickViewSearchByBarcode.text = null
-                    binding.quickViewSearchByBarcode.visibility = View.VISIBLE
+                    binding.quickViewSearchByBarcode.visibility = VISIBLE
                     quickViewBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                     binding.quickViewSearchByBarcode.requestFocus()
                 }
@@ -760,7 +805,7 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
         if (requestCode == ImagesManageActivity.REQUEST_EDIT_IMAGE && (resultCode == RESULT_OK || resultCode == RESULT_CANCELED)) {
             lastBarcode?.let { setShownProduct(it) }
         } else if (resultCode == RESULT_OK && requestCode == LOGIN_ACTIVITY_REQUEST_CODE) {
-            navigateToProductAddition(product)
+            productActivityResultLauncher.launch(product)
         }
     }
 
@@ -797,28 +842,8 @@ class ContinuousScanActivity : BaseActivity(), IProductView {
         }
     }
 
-    private inner class BarcodeScannerCallback : BarcodeCallback {
-        override fun barcodeResult(result: BarcodeResult) {
-            hintBarcodeDisp?.dispose()
-
-            // Prevent duplicate scans
-            if (result.text == null || result.text.isEmpty() || result.text == lastBarcode) return
-
-            val invalidBarcode = daoSession.invalidBarcodeDao.unique {
-                where(InvalidBarcodeDao.Properties.Barcode.eq(result.text))
-            }
-            // Scanned barcode is in the list of invalid barcodes, do nothing
-            if (invalidBarcode != null) return
-
-            if (beepActive) {
-                beepManager.playBeepSound()
-            }
-            lastBarcode = result.text
-            if (!isFinishing) {
-                setShownProduct(result.text)
-                matomoAnalytics.trackEvent(AnalyticsEvent.ScannedBarcode(result.text))
-            }
-        }
+    private inner class BarcodeScannerCallback(private val callback: (BarcodeResult) -> Unit) : BarcodeCallback {
+        override fun barcodeResult(result: BarcodeResult) = callback(result)
 
         // Here possible results are useless but we must implement this
         override fun possibleResultPoints(resultPoints: List<ResultPoint>) = Unit

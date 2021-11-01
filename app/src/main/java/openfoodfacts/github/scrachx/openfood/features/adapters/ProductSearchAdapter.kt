@@ -17,12 +17,12 @@ import openfoodfacts.github.scrachx.openfood.network.OpenFoodAPIClient
 import openfoodfacts.github.scrachx.openfood.utils.*
 
 class ProductSearchAdapter(
-        val products: MutableList<SearchProduct?>,
-        private val isLowBatteryMode: Boolean,
-        private val context: Context,
-        private val picasso: Picasso,
-        private val openFoodAPIClient: OpenFoodAPIClient,
-        private val localeManager: LocaleManager
+    val products: MutableList<SearchProduct?>,
+    private val isLowBatteryMode: Boolean,
+    private val context: Context,
+    private val picasso: Picasso,
+    private val openFoodAPIClient: OpenFoodAPIClient,
+    private val localeManager: LocaleManager
 ) : RecyclerView.Adapter<ProductSearchAdapter.ProductsListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductsListViewHolder {
@@ -48,20 +48,20 @@ class ProductSearchAdapter(
         // Load Image if isLowBatteryMode is false
         if (!isLowBatteryMode) {
             picasso
-                    .load(imageSmallUrl)
-                    .placeholder(R.drawable.placeholder_thumb)
-                    .error(R.drawable.error_image)
-                    .fit()
-                    .centerCrop()
-                    .into(holder.productFrontImg, object : Callback {
-                        override fun onSuccess() {
-                            holder.imageProgress.visibility = View.GONE
-                        }
+                .load(imageSmallUrl)
+                .placeholder(R.drawable.placeholder_thumb)
+                .error(R.drawable.error_image)
+                .fit()
+                .centerCrop()
+                .into(holder.productFrontImg, object : Callback {
+                    override fun onSuccess() {
+                        holder.imageProgress.visibility = View.GONE
+                    }
 
-                        override fun onError(ex: Exception) {
-                            holder.imageProgress.visibility = View.GONE
-                        }
-                    })
+                    override fun onError(ex: Exception) {
+                        holder.imageProgress.visibility = View.GONE
+                    }
+                })
         } else {
             picasso.load(R.drawable.placeholder_thumb).into(holder.productFrontImg)
             holder.imageProgress.visibility = View.INVISIBLE

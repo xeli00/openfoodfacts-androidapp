@@ -38,7 +38,10 @@ import androidx.core.text.buildSpannedString
 import androidx.core.text.inSpans
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
@@ -48,7 +51,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -83,8 +86,7 @@ import openfoodfacts.github.scrachx.openfood.models.*
 import openfoodfacts.github.scrachx.openfood.models.entities.ListedProduct
 import openfoodfacts.github.scrachx.openfood.models.entities.ListedProductDao
 import openfoodfacts.github.scrachx.openfood.models.entities.additive.AdditiveName
-import openfoodfacts.github.scrachx.openfood.models.entities.allergen.AllergenHelper
-import openfoodfacts.github.scrachx.openfood.models.entities.allergen.AllergenName
+import openfoodfacts.github.scrachx.openfood.models.entities.allergen.AllergenData
 import openfoodfacts.github.scrachx.openfood.models.entities.analysistagconfig.AnalysisTagConfig
 import openfoodfacts.github.scrachx.openfood.models.entities.category.CategoryName
 import openfoodfacts.github.scrachx.openfood.models.entities.label.LabelName
@@ -98,9 +100,11 @@ import javax.inject.Inject
 import kotlin.random.Random
 
 @AndroidEntryPoint
-class SummaryProductFragment : BaseFragment(), ISummaryProductPresenter.View {
+class SummaryProductFragment : BaseFragment() {
     private var _binding: FragmentSummaryProductBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: SummaryProductViewModel by viewModels()
 
     @Inject
     lateinit var client: OpenFoodAPIClient
@@ -126,7 +130,6 @@ class SummaryProductFragment : BaseFragment(), ISummaryProductPresenter.View {
     @Inject
     lateinit var productRepository: ProductRepository
 
-    private lateinit var presenter: ISummaryProductPresenter.Actions
     private lateinit var mTagDao: TagDao
 
     private lateinit var product: Product
@@ -217,10 +220,35 @@ class SummaryProductFragment : BaseFragment(), ISummaryProductPresenter.View {
             binding.productQuestionLayout.visibility = View.GONE
         }
         binding.productQuestionLayout.setOnClickListener { productQuestion?.let { onProductQuestionClick(it) } }
+
+        lifecycleScope.launchWhenResumed {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch { viewModel.allergens.collectLatest { showAllergens(it) } }
+                launch { viewModel.categoriesState.collectLatest { showCategoriesState(it) } }
+                launch { viewModel.labelsState.collectLatest { showLabelsState(it) } }
+                launch { viewModel.analysisTagsState.collectLatest { showAnalysisTags(it) } }
+                launch { viewModel.additivesState.collectLatest { showAdditivesState(it) } }
+                launch { viewModel.annotationFlow.collectLatest { showAnnotatedInsightToast(it) } }
+                launch {
+                    viewModel.productQuestion.collectLatest {
+                        when (it) {
+                            is InfoState.Data -> showProductQuestion(it.data)
+                            InfoState.Empty -> {
+                                // TODO
+                            }
+                            InfoState.Loading -> {
+                                // TODO
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
         productState = requireProductState()
         refreshView(productState)
 
-        presenter = SummaryProductPresenter(localeManager.getLanguage(), product, this, productRepository)
     }
 
 
@@ -274,7 +302,6 @@ class SummaryProductFragment : BaseFragment(), ISummaryProductPresenter.View {
     override fun refreshView(productState: ProductState) {
         this.productState = productState
         product = productState.product!!
-        presenter = SummaryProductPresenter(localeManager.getLanguage(), product, this, productRepository)
 
         binding.categoriesText.text = buildSpannedString {
             bold { append(getString(R.string.txtCategories)) }
@@ -302,14 +329,13 @@ class SummaryProductFragment : BaseFragment(), ISummaryProductPresenter.View {
 
         // Checks the product states_tags to determine which prompt to be shown
         refreshStatesTagsPrompt()
-        lifecycleScope.launchWhenResumed {
-            presenter.loadAllergens()
-            presenter.loadCategories()
-            presenter.loadLabels()
-            presenter.loadProductQuestion()
-            presenter.loadAdditives()
-            presenter.loadAnalysisTags()
-        }
+
+        viewModel.refreshAllergens(product)
+        viewModel.refreshLabels(product)
+        viewModel.refreshCategories(product)
+        viewModel.refreshAnalysisTags(product)
+        viewModel.refreshAdditives(product)
+        viewModel.loadProductQuestion(product)
 
         val langCode = localeManager.getLanguage()
         val imageUrl = product.getImageUrl(langCode)
@@ -364,9 +390,9 @@ class SummaryProductFragment : BaseFragment(), ISummaryProductPresenter.View {
                 product.embTags.toString()
                     .removeSurrounding("[", "]")
                     .split(", ")
-                    .map {
+                    .map { embCode ->
                         getSearchLinkText(
-                            getEmbCode(it).trim { it <= ' ' },
+                            getEmbCode(embCode).trim { it <= ' ' },
                             SearchType.EMB,
                             requireActivity()
                         )
@@ -585,54 +611,51 @@ class SummaryProductFragment : BaseFragment(), ISummaryProductPresenter.View {
     }
 
 
-    override fun showAdditivesState(state: ProductInfoState<List<AdditiveName>>) {
-        requireActivity().runOnUiThread {
-            when (state) {
-                is ProductInfoState.Loading -> {
-                    binding.textAdditiveProduct.append(getString(R.string.txtLoading))
-                    binding.textAdditiveProduct.visibility = View.VISIBLE
-                }
-                is ProductInfoState.Empty -> binding.textAdditiveProduct.visibility = View.GONE
-                is ProductInfoState.Data -> {
-                    showAdditives(state.data, binding.textAdditiveProduct, wikidataClient, this)
-                }
+    private fun showAdditivesState(state: InfoState<List<AdditiveName>>) {
+        when (state) {
+            InfoState.Loading -> {
+                binding.textAdditiveProduct.append(getString(R.string.txtLoading))
+                binding.textAdditiveProduct.visibility = View.VISIBLE
+            }
+            InfoState.Empty -> binding.textAdditiveProduct.visibility = View.GONE
+            is InfoState.Data -> {
+                showAdditives(state.data, binding.textAdditiveProduct, wikidataClient, this)
             }
         }
+
     }
 
-    override suspend fun showAnalysisTags(state: ProductInfoState<List<AnalysisTagConfig>>) {
-        withContext(Main) {
-            when (state) {
-                is ProductInfoState.Data -> {
-                    binding.analysisContainer.isVisible = true
-                    binding.analysisTags.adapter = IngredientAnalysisTagsAdapter(
-                        requireContext(),
-                        state.data,
-                        picasso,
-                        sharedPreferences
-                    ).apply adapter@{
-                        setOnItemClickListener { view, _ ->
-                            val fragment = IngredientsWithTagDialogFragment.newInstance(
-                                product,
-                                view.getTag(R.id.analysis_tag_config) as AnalysisTagConfig
-                            )
-                            fragment.onDismissListener = { filterVisibleTags() }
-                            fragment.show(childFragmentManager, "fragment_ingredients_with_tag")
-                        }
+    private fun showAnalysisTags(state: InfoState<List<AnalysisTagConfig>>) {
+        when (state) {
+            is InfoState.Data -> {
+                binding.analysisContainer.isVisible = true
+                binding.analysisTags.adapter = IngredientAnalysisTagsAdapter(
+                    requireContext(),
+                    state.data,
+                    picasso,
+                    sharedPreferences
+                ).apply adapter@{
+                    setOnItemClickListener { view, _ ->
+                        val fragment = IngredientsWithTagDialogFragment.newInstance(
+                            product,
+                            view.getTag(R.id.analysis_tag_config) as AnalysisTagConfig
+                        )
+                        fragment.onDismissListener = { filterVisibleTags() }
+                        fragment.show(childFragmentManager, "fragment_ingredients_with_tag")
                     }
                 }
-                ProductInfoState.Empty -> {
-                    // TODO:
-                }
-                ProductInfoState.Loading -> {
-                    // TODO:
-                }
+            }
+            InfoState.Empty -> {
+                // TODO:
+            }
+            InfoState.Loading -> {
+                // TODO:
             }
         }
+
     }
 
-    override fun showAllergens(allergens: List<AllergenName>) {
-        val data = AllergenHelper.computeUserAllergen(product, allergens)
+    private fun showAllergens(data: AllergenData) {
         if (data.isEmpty()) return
 
         if (data.incomplete) {
@@ -640,6 +663,7 @@ class SummaryProductFragment : BaseFragment(), ISummaryProductPresenter.View {
             binding.productAllergenAlertLayout.visibility = View.VISIBLE
             return
         }
+
         binding.productAllergenAlertText.text = buildSpannedString {
             append(getString(R.string.product_allergen_prompt))
             append("\n")
@@ -650,7 +674,7 @@ class SummaryProductFragment : BaseFragment(), ISummaryProductPresenter.View {
     }
 
 
-    override suspend fun showProductQuestion(question: Question) = withContext(Main) {
+    private fun showProductQuestion(question: Question) {
 
         if (!question.isEmpty()) {
             productQuestion = question
@@ -724,88 +748,85 @@ class SummaryProductFragment : BaseFragment(), ISummaryProductPresenter.View {
         val insightId = this.insightId ?: error("Property 'insightId' not set.")
         val annotation = this.annotation ?: error("Property 'annotation' not set.")
 
-        lifecycleScope.launch { presenter.annotateInsight(insightId, annotation) }
+        viewModel.annotateInsight(insightId, annotation)
 
         Log.d(LOG_TAG, "Annotation $annotation received for insight $insightId")
         binding.productQuestionLayout.visibility = View.GONE
         productQuestion = null
     }
 
-    override fun showAnnotatedInsightToast(annotationResponse: AnnotationResponse) {
-        if (annotationResponse.status == "updated" && activity != null) {
+    private fun showAnnotatedInsightToast(annotationResponse: AnnotationResponse) {
+        if (annotationResponse.status == "updated") {
             Snackbar.make(binding.root, R.string.product_question_submit_message, LENGTH_SHORT).show()
         }
     }
 
-    override fun showLabelsState(state: ProductInfoState<List<LabelName>>) {
-        requireActivity().runOnUiThread {
-            when (state) {
-                is ProductInfoState.Data -> {
-                    binding.labelsText.isClickable = true
-                    binding.labelsText.movementMethod = LinkMovementMethod.getInstance()
+    private fun showLabelsState(state: InfoState<List<LabelName>>) {
+        when (state) {
+            is InfoState.Data -> {
+                binding.labelsText.isClickable = true
+                binding.labelsText.movementMethod = LinkMovementMethod.getInstance()
 
-                    binding.labelsText.text = buildSpannedString {
-                        bold { append(getString(R.string.txtLabels)) }
-                        state.data.map(::getLabelTag).forEachIndexed { i, el ->
-                            append(el)
-                            if (i != state.data.size) append(", ")
-                        }
-
+                binding.labelsText.text = buildSpannedString {
+                    bold { append(getString(R.string.txtLabels)) }
+                    state.data.map(::getLabelTag).forEachIndexed { i, el ->
+                        append(el)
+                        if (i != state.data.size) append(", ")
                     }
-                }
-                is ProductInfoState.Loading -> {
-                    binding.labelsText.text = buildSpannedString {
-                        bold { append(getString(R.string.txtLabels)) }
-                        append(getString(R.string.txtLoading))
-                    }
-                }
 
-                is ProductInfoState.Empty -> {
-                    binding.labelsText.visibility = View.GONE
-                    binding.labelsIcon.visibility = View.GONE
                 }
+            }
+            is InfoState.Loading -> {
+                binding.labelsText.text = buildSpannedString {
+                    bold { append(getString(R.string.txtLabels)) }
+                    append(getString(R.string.txtLoading))
+                }
+            }
+
+            is InfoState.Empty -> {
+                binding.labelsText.visibility = View.GONE
+                binding.labelsIcon.visibility = View.GONE
             }
         }
     }
 
-    override fun showCategoriesState(state: ProductInfoState<List<CategoryName>>) {
-        requireActivity().runOnUiThread {
-            when (state) {
-                is ProductInfoState.Loading -> {
-                    binding.categoriesText.text = buildSpannedString {
-                        bold { append(getString(R.string.txtCategories)) }
-                        append(getString(R.string.txtLoading))
-                    }
-                }
-                is ProductInfoState.Empty -> {
-                    binding.categoriesText.visibility = View.GONE
-                    binding.categoriesIcon.visibility = View.GONE
-                }
-                is ProductInfoState.Data -> {
-                    val categories = state.data
-                    if (categories.isEmpty()) {
-                        binding.categoriesLayout.visibility = View.GONE
-                        return@runOnUiThread
-                    }
-                    CategoryProductHelper.showCategories(
-                        this,
-                        binding.categoriesText,
-                        binding.textCategoryAlcoholAlert,
-                        categories,
-                        wikidataClient,
-                    )
+    private fun showCategoriesState(state: InfoState<List<CategoryName>>) {
+        when (state) {
+            is InfoState.Loading -> {
+                binding.categoriesText.text = buildSpannedString {
+                    bold { append(getString(R.string.txtCategories)) }
+                    append(getString(R.string.txtLoading))
                 }
             }
+            is InfoState.Empty -> {
+                binding.categoriesText.visibility = View.GONE
+                binding.categoriesIcon.visibility = View.GONE
+            }
+            is InfoState.Data -> {
+                val categories = state.data
+                if (categories.isEmpty()) {
+                    binding.categoriesLayout.visibility = View.GONE
+                    return
+                }
+                CategoryProductHelper.showCategories(
+                    this@SummaryProductFragment,
+                    binding.categoriesText,
+                    binding.textCategoryAlcoholAlert,
+                    categories,
+                    wikidataClient,
+                )
+            }
+
         }
     }
 
     private suspend fun getEmbUrl(embTag: String): String? = withContext(IO) {
-        if (mTagDao.queryBuilder().where(TagDao.Properties.Id.eq(embTag)).list().isEmpty()) null
-        else mTagDao.queryBuilder().where(TagDao.Properties.Id.eq(embTag)).unique().url
+        if (mTagDao.list { where(TagDao.Properties.Id.eq(embTag)) }.isEmpty()) null
+        else mTagDao.unique { where(TagDao.Properties.Id.eq(embTag)) }?.url
     }
 
     private fun getEmbCode(embTag: String) =
-        mTagDao.queryBuilder().where(TagDao.Properties.Id.eq(embTag)).unique()?.name ?: embTag
+        mTagDao.unique { where(TagDao.Properties.Id.eq(embTag)) }?.name ?: embTag
 
     private fun getLabelTag(label: LabelName): CharSequence {
         val clickableSpan = object : ClickableSpan() {

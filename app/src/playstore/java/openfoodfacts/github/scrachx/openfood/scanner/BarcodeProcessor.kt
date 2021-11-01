@@ -18,30 +18,32 @@ import java.io.IOException
 /**
  * A processor to run the barcode detector.
  */
-class BarcodeProcessor(graphicOverlay: GraphicOverlay, private val workflowModel: WorkflowModel) :
-        FrameProcessorBase<List<Barcode>>() {
+class BarcodeProcessor(
+    graphicOverlay: GraphicOverlay,
+    private val workflowModel: WorkflowModel
+) : FrameProcessorBase<List<Barcode>>() {
 
     private val options = BarcodeScannerOptions.Builder()
-            .setBarcodeFormats(
-                    Barcode.FORMAT_UPC_A,
-                    Barcode.FORMAT_UPC_E,
-                    Barcode.FORMAT_EAN_13,
-                    Barcode.FORMAT_EAN_8,
-                    Barcode.FORMAT_CODE_39,
-                    Barcode.FORMAT_CODE_93,
-                    Barcode.FORMAT_CODE_128
-            ).build()
+        .setBarcodeFormats(
+            Barcode.FORMAT_UPC_A,
+            Barcode.FORMAT_UPC_E,
+            Barcode.FORMAT_EAN_13,
+            Barcode.FORMAT_EAN_8,
+            Barcode.FORMAT_CODE_39,
+            Barcode.FORMAT_CODE_93,
+            Barcode.FORMAT_CODE_128
+        ).build()
 
     private val scanner = BarcodeScanning.getClient(options)
     private val cameraReticleAnimator: CameraReticleAnimator = CameraReticleAnimator(graphicOverlay)
 
     override fun detectInImage(image: InputImage): Task<List<Barcode>> =
-            scanner.process(image)
+        scanner.process(image)
 
     @MainThread
     override fun onSuccess(
-            results: List<Barcode>,
-            graphicOverlay: GraphicOverlay
+        results: List<Barcode>,
+        graphicOverlay: GraphicOverlay
     ) {
 
         if (!workflowModel.isCameraLive) return
@@ -71,7 +73,7 @@ class BarcodeProcessor(graphicOverlay: GraphicOverlay, private val workflowModel
             } else {
                 // Barcode size in the camera view is sufficient.
                 workflowModel.setWorkflowState(WorkflowState.DETECTED)
-                workflowModel.detectedBarcode.setValue(barcodeInCenter)
+                workflowModel.setDetectedBarcode(barcodeInCenter)
             }
         }
         graphicOverlay.invalidate()

@@ -15,12 +15,15 @@
  */
 package openfoodfacts.github.scrachx.openfood.features.product.view.ingredients
 
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import openfoodfacts.github.scrachx.openfood.models.Product
-import openfoodfacts.github.scrachx.openfood.models.entities.additive.AdditiveName
+import openfoodfacts.github.scrachx.openfood.models.ProductState
 import openfoodfacts.github.scrachx.openfood.repositories.ProductRepository
+import openfoodfacts.github.scrachx.openfood.utils.InfoState
 import openfoodfacts.github.scrachx.openfood.utils.LocaleManager
 import javax.inject.Inject
 
@@ -30,49 +33,87 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductIngredientsViewModel @Inject constructor(
     private val productRepository: ProductRepository,
-    private val localeManager: LocaleManager
+    localeManager: LocaleManager
 ) : ViewModel() {
 
-    val product = MutableLiveData<Product>()
+    val languageCode = localeManager.getLanguage()
 
-    val additives = product.switchMap { product ->
-        liveData<List<AdditiveName>> {
-            val additivesTags = product.additivesTags
-            if (additivesTags.isEmpty()) {
-                emit(emptyList())
-            } else {
-                val languageCode = localeManager.getLanguage()
+    private val _productState = MutableSharedFlow<ProductState>()
+    val productState = _productState.asSharedFlow()
 
-                additivesTags.map { tag ->
-                    productRepository.getAdditiveByTagAndLanguageCode(tag, languageCode).await()
-                        .takeUnless { it.isNull }
-                        ?: productRepository.getAdditiveByTagAndDefaultLanguageCode(tag).await()
-                }.filter { it.isNotNull }.let { emit(it) }
-            }
+    val product = productState.map { it.product!! }
+
+    fun refreshProduct(productState: ProductState) {
+        viewModelScope.launch { _productState.emit(productState) }
+    }
+
+    val additives = product.transform { product ->
+        emit(InfoState.Loading)
+        val additivesTags = product.additivesTags
+
+        if (additivesTags.isEmpty()) {
+            emit(InfoState.Empty)
+        } else {
+            additivesTags.map { tag ->
+                productRepository.getAdditive(tag, languageCode).takeUnless { it.isNull }
+                    ?: productRepository.getAdditive(tag)
+            }.filter { it.isNotNull }.let { emit(InfoState.Data(it)) }
         }
     }
 
-    val allergens = product.switchMap { product ->
-        liveData {
-            val allergenTags = product.allergensTags
-            if (allergenTags.isEmpty()) {
-                emit(emptyList())
-                return@liveData
-            }
+    val allergensNames = product.transform { product ->
+        emit(InfoState.Loading)
+        val allergenTags = product.allergensTags
 
-            val languageCode = localeManager.getLanguage()
+        if (allergenTags.isEmpty()) {
+            emit(InfoState.Empty)
+        } else {
             allergenTags.map { tag ->
-                productRepository.getAllergenByTagAndLanguageCode(tag, languageCode)
-                    .takeUnless { it.isNull }
+                productRepository.getAllergenByTagAndLanguageCode(tag, languageCode).takeUnless { it.isNull }
                     ?: productRepository.getAllergenByTagAndDefaultLanguageCode(tag)
-            }.filter { it.isNotNull }.let { emit(it) }
+            }.filter { it.isNotNull }.let { emit(InfoState.Data(it)) }
         }
     }
 
 
-    val vitaminsTags = product.map(Product::vitaminTags)
-    val mineralTags = product.map(Product::mineralTags)
-    val otherNutritionTags = product.map(Product::otherNutritionTags)
-    val aminoAcidTagsList = product.map(Product::aminoAcidTags)
+    val allergens = product.map { product ->
+        product.allergensTags.takeUnless { it.isEmpty() } ?: emptyList()
+    }
+
+
+    val vitaminsTags = product.map { it.vitaminTags }
+    val mineralTags = product.map { it.mineralTags }.filterNot { it.isEmpty() }
+    val otherNutritionTags = product.map { it.otherNutritionTags }
+    val aminoAcidTagsList = product.map { it.aminoAcidTags }
+
+    val traces = product.map { product ->
+        val traces = product.traces
+
+        if (traces.isNullOrBlank()) InfoState.Empty
+        else InfoState.Data(traces.split(","))
+    }
+
+    val ingredientsImageUrl = product.map { product ->
+        val url = product.getImageIngredientsUrl(languageCode)
+
+        if (url.isNullOrBlank()) InfoState.Empty
+        else InfoState.Data(url)
+    }
+
+    val ingredientsText = product.map { product ->
+        val ingredients = product.getIngredientsText(languageCode)
+
+        if (ingredients.isNullOrEmpty()) InfoState.Empty
+        else InfoState.Data(ingredients.replace("_", ""))
+    }
+
+    val extractPromptVisibility = product.map {
+        val url = it.getImageIngredientsUrl(languageCode)
+        val ingredients = it.getIngredientsText(languageCode)
+
+        return@map ingredients.isNullOrEmpty() && !url.isNullOrEmpty()
+    }
+
+    val novaGroups = product.map { it.novaGroups }
 
 }
