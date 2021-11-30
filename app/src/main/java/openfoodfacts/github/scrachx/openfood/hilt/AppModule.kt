@@ -15,9 +15,11 @@ import okhttp3.OkHttpClient
 import openfoodfacts.github.scrachx.openfood.AppFlavors
 import openfoodfacts.github.scrachx.openfood.BuildConfig
 import openfoodfacts.github.scrachx.openfood.category.network.CategoryNetworkService
+import openfoodfacts.github.scrachx.openfood.hilt.qualifiers.LoginPreferences
 import openfoodfacts.github.scrachx.openfood.models.DaoMaster
 import openfoodfacts.github.scrachx.openfood.models.DaoSession
 import openfoodfacts.github.scrachx.openfood.utils.OFFDatabaseHelper
+import openfoodfacts.github.scrachx.openfood.utils.getLoginPreferences
 import retrofit2.Retrofit
 import java.io.File
 import javax.inject.Singleton
@@ -43,7 +45,7 @@ class AppModule {
 
     @Provides
     fun provideCategoryNetworkService(retrofit: Retrofit): CategoryNetworkService =
-            retrofit.create(CategoryNetworkService::class.java)
+        retrofit.create(CategoryNetworkService::class.java)
 
     @Provides
     @Singleton
@@ -51,15 +53,21 @@ class AppModule {
         val cacheSize: Long = 50 * 1024 * 1024
         val cacheDir = File(context.cacheDir, "http-cache")
         val httpClientWithCache = httpClient.newBuilder()
-                .cache(Cache(cacheDir, cacheSize))
-                .build()
+            .cache(Cache(cacheDir, cacheSize))
+            .build()
         return Picasso.Builder(context)
-                .downloader(OkHttp3Downloader(httpClientWithCache))
-                .build()
+            .downloader(OkHttp3Downloader(httpClientWithCache))
+            .build()
     }
 
     @Provides
     @Singleton
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context)
+
+    @Provides
+    @Singleton
+    @LoginPreferences
+    fun provideLoginPreferences(@ApplicationContext context: Context): SharedPreferences =
+        context.getLoginPreferences()
 }
