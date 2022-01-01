@@ -163,7 +163,7 @@
 
         <ImageButton
             android:id="@+id/addProduct"
-            style="@style/ButtonBorder"
+            style="@style/ButtonRounded.Border"
             android:layout_width="95dp"
             android:layout_height="90dp"
             android:layout_marginTop="25dp"

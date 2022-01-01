@@ -122,10 +122,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
                         android:layout_marginTop="@dimen/spacing_small"
-                        android:paddingEnd="10dp"
-                        android:paddingRight="10dp"
+                        android:layout_marginEnd="10dp"
                         android:text="@string/incomplete_states"
                         tools:drawableEnd="@drawable/ic_keyboard_arrow_down_grey_24dp"
                         tools:drawableRight="@drawable/ic_keyboard_arrow_down_grey_24dp" />
@@ -156,14 +154,12 @@
 
                     <TextView
                         android:id="@+id/complete_states"
-                        style="@style/EditHeaderGreen"
+                        style="@style/EditHeader.Green"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
                         android:layout_marginTop="@dimen/spacing_small"
-                        android:paddingEnd="10dp"
-                        android:paddingRight="10dp"
+                        android:layout_marginEnd="10dp"
                         android:text="@string/complete_states"
                         tools:drawableEnd="@drawable/ic_keyboard_arrow_down_grey_24dp"
                         tools:drawableRight="@drawable/ic_keyboard_arrow_down_grey_24dp" />

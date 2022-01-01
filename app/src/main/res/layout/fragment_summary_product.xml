@@ -58,7 +58,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/spacing_small"
-                        android:layout_marginRight="@dimen/spacing_small"
                         android:gravity="center_vertical"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -317,9 +316,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginEnd="4dp"
-                        android:layout_marginRight="4dp"
                         android:layout_weight="2"
                         android:adjustViewBounds="true"
                         android:clickable="true"
@@ -347,9 +344,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="4dp"
-                        android:layout_marginLeft="4dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
                         android:layout_weight="2"
                         android:adjustViewBounds="true"
                         tools:ignore="ContentDescription"
@@ -358,7 +353,7 @@
 
                 <Button
                     android:id="@+id/add_nutriscore_prompt"
-                    style="@style/ButtonBorder"
+                    style="@style/ButtonRounded.Border"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -405,7 +400,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_margin="@dimen/spacing_normal"
                     app:srcCompat="@drawable/ic_forum_white_24dp"
@@ -417,7 +411,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/product_question_icon"
-                    android:layout_toRightOf="@id/product_question_icon"
                     android:orientation="vertical">
 
                     <TextView
@@ -434,9 +427,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingStart="@dimen/spacing_small"
-                        android:paddingLeft="@dimen/spacing_small"
                         android:paddingEnd="@dimen/spacing_tiny"
-                        android:paddingRight="@dimen/spacing_tiny"
                         android:paddingBottom="@dimen/spacing_small"
                         android:text="@string/product_question_prompt"
                         android:textColor="@color/grey_300" />
@@ -447,7 +438,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/close_button"
                     android:padding="@dimen/spacing_normal"
@@ -562,7 +552,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="8dp"
-                            android:layout_marginLeft="8dp"
                             android:padding="@dimen/padding_too_short"
                             android:textIsSelectable="true"
                             android:textSize="@dimen/font_normal"
@@ -594,7 +583,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="8dp"
-                            android:layout_marginLeft="8dp"
                             android:padding="@dimen/padding_too_short"
                             android:textIsSelectable="true"
                             android:textSize="@dimen/font_normal"
@@ -629,7 +617,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="fill"
                             android:layout_marginStart="8dp"
-                            android:layout_marginLeft="8dp"
                             android:padding="@dimen/padding_too_short"
                             android:textIsSelectable="true"
                             android:textSize="@dimen/font_normal"
@@ -658,7 +645,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
                     android:layout_marginTop="@dimen/spacing_small"
                     android:layout_marginBottom="@dimen/spacing_small"
                     android:gravity="center"
@@ -670,7 +656,7 @@
 
             <Button
                 android:id="@+id/buttonNewFrontImage"
-                style="@style/ButtonBorder"
+                style="@style/ButtonRounded.Border"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -682,7 +668,7 @@
 
             <Button
                 android:id="@+id/buttonMorePictures"
-                style="@style/ButtonBorder"
+                style="@style/ButtonRounded.Border"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

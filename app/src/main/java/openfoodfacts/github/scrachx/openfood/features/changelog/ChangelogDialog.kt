@@ -64,7 +64,7 @@ class ChangelogDialog : DialogFragment(R.layout.fragment_changelog) {
     private lateinit var translationHelpLabel: TextView
     private lateinit var recyclerView: RecyclerView
 
-    override fun getTheme(): Int = R.style.OFFTheme_NoActionBar
+    override fun getTheme(): Int = R.style.Theme_OFF_NoActionBar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

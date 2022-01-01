@@ -62,7 +62,8 @@
     <color name="brown_100">#d7ccc8</color>
 
     <!-- MLKit Scanner preview screen overlay-->
-    <color name="transparent">#00000000</color>
+    <color name="transparent">@android:color/transparent</color>
+
     <color name="reticle_ripple">#9AFFFFFF</color>
     <color name="object_reticle_outer_ring_fill">#1F000000</color>
     <color name="object_reticle_outer_ring_stroke">#9AFFFFFF</color>

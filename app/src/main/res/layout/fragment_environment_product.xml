@@ -62,7 +62,7 @@
 
             <Button
                 android:id="@+id/extract_recycling_prompt"
-                style="@style/ButtonBorder"
+                style="@style/ButtonRounded.Border"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="OFFTheme" parent="Theme.MaterialComponents.DayNight.Bridge">
-        <!--<item name="colorPrimary">@color/material_blue_500</item>-->
-        <!--<item name="statusBarColor">@color/grey_300</item>-->
-        <!--<item name="colorBackground">@color/grey_50</item>-->
-        <item name="colorAccent">@color/brand_red</item>
-        <item name="preferenceTheme">@style/OFFPreferenceTheme</item>
-
-        <item name="android:textColorLink">@color/brand_blue</item>
-
-        <!--For shared element transition-->
-        <item name="android:windowContentTransitions">true</item>
-    </style>
-
-    <style name="errorText" parent="@style/TextAppearance.Design.Error">
+    <style name="TextAppearance.OFF.ErrorText" parent="@style/TextAppearance.Design.Error">
         <item name="android:textColor">@color/brand_red</item>
     </style>
 
@@ -24,17 +10,10 @@
         <item name="queryBackground">@color/md_light_appbar</item>
     </style>
 
-    <style name="OFFTheme.NoActionBar" parent="OFFTheme">
+    <style name="Theme.OFF.NoActionBar" parent="Theme.OFF">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="searchViewStyle">@style/customSearchView</item>
-    </style>
-
-    <style name="SplashTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="DefaultButtonText">
@@ -51,17 +30,10 @@
         <item name="android:shadowRadius">1</item>
     </style>
 
-    <style name="QuestionDialog" parent="Theme.AppCompat.Dialog">
+    <style name="Theme.OFF.QuestionDialog" parent="Theme.AppCompat.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
-    </style>
-
-
-    <style name="HorizontalLineSeparator">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0.4dp</item>
-        <item name="android:background">@color/grey_200</item>
     </style>
 
 </resources>

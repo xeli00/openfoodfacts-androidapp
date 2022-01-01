@@ -26,7 +26,7 @@ import openfoodfacts.github.scrachx.openfood.databinding.DialogProductQuestionBi
 
 class QuestionDialog(context: Context) {
     private val binding = DialogProductQuestionBinding.inflate(LayoutInflater.from(context))
-    private val dialog = Dialog(context, R.style.QuestionDialog).apply {
+    private val dialog = Dialog(context, R.style.Theme_OFF_QuestionDialog).apply {
         requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
         setContentView(binding.root)
     }

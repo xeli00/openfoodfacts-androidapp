@@ -30,9 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_normal"
-        android:layout_marginLeft="@dimen/padding_normal"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:textSize="@dimen/font_normal"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/icon_frame"
@@ -77,7 +75,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/helpNeeded"
-        style="@style/ButtonBorder"
+        style="@style/ButtonRounded.Border"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -91,7 +89,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/close"
-        style="@style/ButtonBorder"
+        style="@style/ButtonRounded.Border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_normal"

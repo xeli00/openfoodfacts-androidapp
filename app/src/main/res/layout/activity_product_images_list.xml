@@ -14,7 +14,8 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:targetApi="lollipop" />
 
     <FrameLayout
         android:id="@+id/container"
@@ -40,9 +41,7 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/spacing_small"
             android:orientation="vertical"
-            android:visibility="invisible"
-
-            >
+            android:visibility="invisible">
 
             <ImageView
                 android:id="@+id/expandedImage"
@@ -69,7 +68,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/spacing_small"
         android:layout_marginBottom="@dimen/spacing_tiny"
         android:text="One selected image"
         android:textColor="@color/white"
@@ -80,14 +78,12 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnChooseImage"
-        style="@style/ButtonBorder.Black"
+        style="@style/ButtonRounded.Border.Black"
         android:layout_width="wrap_content"
 
         android:layout_height="@dimen/button_height_short"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginLeft="@dimen/spacing_small"
         android:text="@string/choose_picture_from_gallery"
         app:drawableLeftCompat="@drawable/ic_photo_library"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -95,18 +91,16 @@
 
     <ImageView
         android:id="@+id/btnAcceptSelection"
-        style="@style/ButtonBorder.Black"
+        style="@style/ButtonRounded.Border.Black"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_height_short"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginEnd="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/spacing_small"
-        tools:ignore="ContentDescription"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_check_white_24dp"
+        tools:ignore="ContentDescription"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

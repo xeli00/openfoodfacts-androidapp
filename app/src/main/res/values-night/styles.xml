@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="OFFTheme" parent="Theme.MaterialComponents.DayNight.Bridge">
+    <style name="Theme.OFF" parent="Theme.MaterialComponents.DayNight.Bridge">
         <!--<item name="colorPrimary">@color/material_blue_500</item>-->
         <!--<item name="statusBarColor">@color/grey_300</item>-->
         <!--<item name="colorBackground">@color/grey_50</item>-->
-        <item name="colorAccent">@color/brand_red</item>
+        <item name="colorAccent">@color/brand_light_blue</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="searchViewStyle">@style/customSearchView</item>
 
@@ -27,7 +27,7 @@
         <item name="material_drawer_legacy_style">false</item> <!-- Enables legacy Material 1 style -->
     </style>
 
-    <style name="ButtonBorder" parent="ButtonRounded">
+    <style name="ButtonRounded.Border" parent="ButtonRounded">
         <item name="android:background">@drawable/rounded_button_shape</item>
         <item name="android:textColor">@color/brand_light_blue</item>
         <item name="android:textStyle">bold</item>

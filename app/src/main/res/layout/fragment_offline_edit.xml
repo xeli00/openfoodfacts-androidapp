@@ -45,6 +45,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            tools:targetApi="lollipop"
             tools:visibility="gone">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -59,7 +60,6 @@
                     android:layout_height="@dimen/button_height_too_short"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_margin="@dimen/padding_short"
                     android:layout_marginStart="@dimen/padding_short"
                     android:layout_marginLeft="@dimen/padding_short"
@@ -171,7 +171,7 @@
 
         <Button
             android:id="@+id/buttonSendAll"
-            style="@style/ButtonBorder"
+            style="@style/ButtonRounded.Border"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_gravity="center"

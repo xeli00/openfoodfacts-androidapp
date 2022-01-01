@@ -37,7 +37,7 @@
 
             <Button
                 android:id="@+id/newAdd"
-                style="@style/ButtonBorder"
+                style="@style/ButtonRounded.Border"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -90,7 +90,7 @@
 
             <Button
                 android:id="@+id/get_nutriscore_prompt"
-                style="@style/ButtonBorder"
+                style="@style/ButtonRounded.Border"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/spacing_normal"
@@ -181,7 +181,7 @@
 
             <Button
                 android:id="@+id/calculateNutritionFacts"
-                style="@style/ButtonBorder"
+                style="@style/ButtonRounded.Border"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/spacing_normal"

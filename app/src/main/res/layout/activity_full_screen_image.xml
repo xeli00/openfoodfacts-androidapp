@@ -14,14 +14,14 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:targetApi="lollipop" />
 
     <Spinner
         android:id="@+id/comboImageType"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:background="@drawable/spinner_wight_border"
         app:layout_constraintBottom_toBottomOf="@id/comboLanguages"
         app:layout_constraintStart_toStartOf="parent" />
@@ -31,7 +31,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:text="@string/choose_default_language"
         android:textColor="?android:textColorPrimaryInverse"
         android:textSize="@dimen/font_small"
@@ -63,14 +62,14 @@
         app:layout_constraintBottom_toTopOf="@id/textInfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/comboLanguages" />
+        app:layout_constraintTop_toBottomOf="@id/comboLanguages"
+        tools:targetApi="lollipop" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="@dimen/button_height_short"
         android:layout_height="@dimen/button_height_short"
         android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/btnAddImage"
         app:layout_constraintStart_toStartOf="parent" />
@@ -80,7 +79,6 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/button_height_short"
         android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginLeft="@dimen/spacing_small"
         android:layout_marginBottom="8dp"
         android:gravity="start|center_vertical"
         android:textColor="@color/white"
@@ -92,11 +90,10 @@
 
     <ImageView
         android:id="@+id/btnAddImage"
-        style="@style/ButtonBorder.Black"
+        style="@style/ButtonRounded.Border.Black"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_height_short"
         android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="16dp"
         android:hint="@string/take_picture"
         android:textColor="@color/white"
@@ -107,11 +104,10 @@
 
     <ImageView
         android:id="@+id/btnChooseImage"
-        style="@style/ButtonBorder.Black"
+        style="@style/ButtonRounded.Border.Black"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_height_short"
         android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginLeft="@dimen/spacing_small"
         android:layout_marginBottom="16dp"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -121,11 +117,10 @@
 
     <ImageView
         android:id="@+id/btnEditImage"
-        style="@style/ButtonBorder.Black"
+        style="@style/ButtonRounded.Border.Black"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_height_short"
         android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginLeft="@dimen/spacing_small"
         android:layout_marginBottom="16dp"
         android:text="@string/edit_image"
         android:textColor="@color/white"
@@ -136,11 +131,10 @@
 
     <ImageView
         android:id="@+id/btnUnselectImage"
-        style="@style/ButtonBorder.Black"
+        style="@style/ButtonRounded.Border.Black"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_height_short"
         android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginLeft="@dimen/spacing_small"
         android:layout_marginBottom="16dp"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -150,11 +144,10 @@
 
     <ImageView
         android:id="@+id/btn_done"
-        style="@style/ButtonBorder.Black"
+        style="@style/ButtonRounded.Border.Black"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_height_short"
         android:layout_marginEnd="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="16dp"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"

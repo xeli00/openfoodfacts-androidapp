@@ -91,8 +91,8 @@ import openfoodfacts.github.scrachx.openfood.models.entities.label.LabelName
 import openfoodfacts.github.scrachx.openfood.models.entities.tag.TagDao
 import openfoodfacts.github.scrachx.openfood.repositories.ProductRepository
 import openfoodfacts.github.scrachx.openfood.repositories.RobotoffRepository
-import openfoodfacts.github.scrachx.openfood.repositories.WikidataRepository
 import openfoodfacts.github.scrachx.openfood.repositories.TaxonomiesRepository
+import openfoodfacts.github.scrachx.openfood.repositories.WikidataRepository
 import openfoodfacts.github.scrachx.openfood.utils.*
 import java.io.File
 import javax.inject.Inject
