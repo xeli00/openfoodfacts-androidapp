@@ -83,7 +83,7 @@
         <item>Asam dekanoat (10:0)</item>
         <item>Asam heksanoat (6:0)</item>
         <item>Asam kaprilat (8:0)</item>
-        <item>Kasein</item>
+        <item>kasen</item>
         <item>Asam cerotic (26:0)</item>
         <item>Klorida</item>
         <item>Kolesterol</item>
@@ -295,7 +295,7 @@
     <string name="something_went_wrong">Maaf, sesuatu tidak beres…</string>
     <string name="txt_try_again">Coba lagi</string>
     <string name="nutrition_lactose">Laktosa</string>
-    <string name="nutrition_casein">Kasein</string>
+    <string name="nutrition_casein">kasen</string>
     <string name="nutrition_maltodextrins">Maltodekstrin</string>
     <string name="nutrition_serum_proteins">Protein Serum</string>
     <string name="nutrition_nucleotides">Nukleotida</string>
@@ -478,6 +478,7 @@
     <string name="notify_channel_description">Pemberitahuan untuk menampilkan lokasi berkas yang diekspor</string>
     <string name="products_to_be_completed">Produk - produk yang perlu dilengkapi</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Produk ditambahkan pada hari %1$s jam %2$s CET sebesar %3$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Penyuntingan terakhir halaman produk pada hari %1$s jam %2$s CEST oleh %3$s </string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">Halaman produk juga disunting oleh </string>
     <string name="product_states">Status produk</string>
@@ -499,6 +500,7 @@
     <string name="trouble_scanning">Pemindaian bermasalah?</string>
     <string name="barcode_hint">Pemindaian bermasalah? Masukkan kode batang</string>
     <string name="switch_camera">Ganti kamera</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">Fokus otomatis</string>
     <string name="initial_loading">Pemuatan awal</string>
     <string name="OFFlogo">Logo Open Food Facts</string>
@@ -755,4 +757,5 @@
     <string name="msg_welcome_ecoscore">Sintesis dampak lingkungan dari makanan Anda.</string>
     <string name="title_welcome_matomo">Kirim analitik anonim</string>
     <string name="msg_welcome_matomo">Bantu para relawan Open Food Facts untuk meningkatkan aplikasi. Anda memiliki pilihan untuk mengirim analitik anonim.\n\nJika Anda berubah pikiran, opsi ini dapat diaktifkan dan dinonaktifkan kapan saja dari bagian pengaturan.</string>
+    <string name="hint_category_list">Pencarian untuk kategori makanan</string>
 </resources>

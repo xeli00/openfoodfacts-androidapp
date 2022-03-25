@@ -487,6 +487,7 @@
     <string name="notify_channel_description">Melding om de locatie van het geëxporteerde bestand te tonen</string>
     <string name="products_to_be_completed">Onvoltooide producten</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Product toegevoegd op %1$s om %2$s CET door %3$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Laatste bewerking van productpagina op %1$s om %2$s CET door %3$s</string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">Productpagina ook bewerkt door </string>
     <string name="product_states">Productdata volledigheid</string>
@@ -509,6 +510,7 @@
     <string name="trouble_scanning">Problemen met scannen?</string>
     <string name="barcode_hint">Problemen met scannen? Voer de barcode in</string>
     <string name="switch_camera">Wissel camera</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">Autofocus</string>
     <string name="initial_loading">Eerste laden</string>
     <string name="OFFlogo">Open Food Facts logo</string>
@@ -766,4 +768,5 @@
     <string name="msg_welcome_ecoscore">Een milieu-impactsamenvatting van je levensmiddelen.</string>
     <string name="title_welcome_matomo">Stuur anonieme analyses</string>
     <string name="msg_welcome_matomo">Help de vrijwilligers van Open Food Facts om de app te verbeteren. Je bepaalt zelf of je anonieme analyses verstuurt.\n\nAls je van gedachten verandert, kan deze optie op elk moment onder Instellingen worden in- of uitgeschakeld.</string>
+    <string name="hint_category_list">Search for a food category</string>
 </resources>

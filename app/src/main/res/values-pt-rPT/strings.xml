@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <plurals name="offline_notification_count">
-        <item quantity="one">Tem %d produto armazenado no seu dispositivo à espera de ser enviado para o Open Food Facts</item>
+        <item quantity="one">Tem 1 produto armazenado no seu dispositivo à espera de ser enviado para o Open Food Facts</item>
         <item quantity="other">Tem %d produtos armazenados no seu dispositivo à espera de serem enviados para o Open Food Facts</item>
     </plurals>
     <plurals name="seconds">
@@ -487,6 +487,7 @@
     <string name="notify_channel_description">Notificação para mostrar a localização do ficheiro exportado</string>
     <string name="products_to_be_completed">Produtos que precisam ser completados</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Produto adicionado em %1$s às %2$s CET por %3$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Última edição da página do produto em %1$s às %2$s por %3$s </string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">Página do produto também editada por </string>
     <string name="product_states">Estados de produto</string>
@@ -509,6 +510,7 @@
     <string name="trouble_scanning">Problemas ao digitalizar?</string>
     <string name="barcode_hint">Problemas ao digitalizar? Digite o código de barras</string>
     <string name="switch_camera">Mudar de câmara</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">Focagem automática</string>
     <string name="initial_loading">Carregamento inicial</string>
     <string name="OFFlogo">Logotipo da Open Food Facts</string>
@@ -766,4 +768,5 @@
     <string name="msg_welcome_ecoscore">Um resumo do impacto ambiental da sua alimentação.</string>
     <string name="title_welcome_matomo">Enviar estatísticas anónimas</string>
     <string name="msg_welcome_matomo">Ajude os voluntários do Open Food Facts a melhorar a aplicação. Decida se quer enviar estatísticas anónimas.\n\nSe mudar de ideia, esta opção pode ser ativada e desativada a qualquer momento nas configurações.</string>
+    <string name="hint_category_list">Search for a food category</string>
 </resources>

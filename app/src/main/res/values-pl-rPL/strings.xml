@@ -497,6 +497,7 @@
     <string name="notify_channel_description">Powiadomienie wskazujące lokalizację wyeksportowanego pliku</string>
     <string name="products_to_be_completed">Produkty do uzupełnienia</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Produkt dodany %1$s o %2$s CET przez %3$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Ostatnia edycja strony produktu %1$s o %2$s CEST przez %3$s </string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">Strona edytowana także przez </string>
     <string name="product_states">Product States</string>
@@ -521,6 +522,7 @@
     <string name="trouble_scanning">Problemy ze skanowaniem?</string>
     <string name="barcode_hint">Problemy ze skanowaniem? Wpisz kod kreskowy</string>
     <string name="switch_camera">Zmień Kamerę</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">Automatyczna Ostrość</string>
     <string name="initial_loading">Wstępne ładowanie</string>
     <string name="OFFlogo">Logo Open Food Facts</string>
@@ -778,4 +780,5 @@
     <string name="msg_welcome_ecoscore">A synthesis of the environmental impact of your food.</string>
     <string name="title_welcome_matomo">Send anonymous analytics</string>
     <string name="msg_welcome_matomo">Help the Open Food Facts volunteers to improve the app. You decide if you send anonymous analytics.\n\nIf you change your mind this option can be enabled and disabled at any time from the settings.</string>
+    <string name="hint_category_list">Search for a food category</string>
 </resources>

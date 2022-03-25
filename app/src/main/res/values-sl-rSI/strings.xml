@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <plurals name="offline_notification_count">
-        <item quantity="one">You have %d offline product waiting to be contributed to Open Food Facts</item>
+        <item quantity="one">You have 1 offline product waiting to be contributed to Open Food Facts</item>
         <item quantity="two">You have %d offline products waiting to be contributed to Open Food Facts</item>
         <item quantity="few">You have %d offline products waiting to be contributed to Open Food Facts</item>
         <item quantity="other">You have %d offline products waiting to be contributed to Open Food Facts</item>
@@ -497,6 +497,7 @@
     <string name="notify_channel_description">Obvestilo, da prikažete lokacijo izvožene datoteke</string>
     <string name="products_to_be_completed">Izdelki, ki jih je potrebno dokončati</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Product added on %1$s at %2$s CET by %3$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Zadnja sprememba strani izdelka %1$s na %2$s CEST z %3$s </string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">Stran izdelka, je urejal tudi </string>
     <string name="product_states">Product States</string>
@@ -521,6 +522,7 @@
     <string name="trouble_scanning">Težave pri skeniranju?</string>
     <string name="barcode_hint">Težave pri skeniranju? Vnesite črtno kodo</string>
     <string name="switch_camera">Preobrni kamero</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">Samodejno ostrenje</string>
     <string name="initial_loading">Začetno nalaganje</string>
     <string name="OFFlogo">Open Food Facts logo</string>
@@ -778,4 +780,5 @@
     <string name="msg_welcome_ecoscore">Sinteza vpliva hrane na okolje.</string>
     <string name="title_welcome_matomo">Pošljite anonimno analitiko</string>
     <string name="msg_welcome_matomo">Pomagajte prostovoljcem Open Food Facts pri izboljšanju aplikacije. Odločite se, ali pošljete anonimno analizo.\n\nČe si premislite, lahko to možnost kadar koli omogočite ali onemogočite v nastavitvah.</string>
+    <string name="hint_category_list">Search for a food category</string>
 </resources>

@@ -483,6 +483,7 @@
     <string name="notify_channel_description">显示导出文件位置的通知</string>
     <string name="products_to_be_completed">待完成的产品</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">产品在 %2$s CET 由 %3$s添加到 %1$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">产品页面的最后一次编辑在 %1$s 的 %2$s CEST 由 %3$s </string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">产品页面也被以下人员修改 </string>
     <string name="product_states">产品状态</string>
@@ -504,6 +505,7 @@
     <string name="trouble_scanning">扫描时遇到问题？</string>
     <string name="barcode_hint">扫描时遇到问题？输入条形码：</string>
     <string name="switch_camera">切换摄像头</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">自动对焦</string>
     <string name="initial_loading">初始加载</string>
     <string name="OFFlogo">Open Food Facts标志</string>
@@ -761,4 +763,5 @@
     <string name="msg_welcome_ecoscore">您的食物对环境影响的综述。</string>
     <string name="title_welcome_matomo">发送匿名分析</string>
     <string name="msg_welcome_matomo">帮助 Open Food Facts 志愿者改进这个应用。由您决定是否发送匿名分析。\n\n如果您改变主意，可以随时从设置中启用和禁用此选项。</string>
+    <string name="hint_category_list">Search for a food category</string>
 </resources>

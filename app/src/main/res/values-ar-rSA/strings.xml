@@ -509,6 +509,7 @@
     <string name="notify_channel_description">إشعار لإظهار موقع الملف المستخرج</string>
     <string name="products_to_be_completed">مُنتجات مراد إكمالها</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">تمت إضافة المنتج بتاريخ %1$s فى %2$s من قبل%3$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">التعديل الأخير من صفحة المنتج على %1$s في %2$s CEST بواسطة %3$s</string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">تم تعديل المنتج أيضاً بواسطة </string>
     <string name="product_states">Product States</string>
@@ -535,6 +536,7 @@
     <string name="trouble_scanning">عطل في المسح؟</string>
     <string name="barcode_hint">عطل في المسح؟ أدخل الباركود</string>
     <string name="switch_camera">تبديل الكاميرا</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">ضبط تلقائي للصورة</string>
     <string name="initial_loading">التمهيد للتحميل</string>
     <string name="OFFlogo">شعار الحقائق الغذائية المفتوحة</string>
@@ -792,4 +794,5 @@
     <string name="msg_welcome_ecoscore">تركيبة من الأثر البيئي لطعامك.</string>
     <string name="title_welcome_matomo">إرسال تحليلات مجهولة</string>
     <string name="msg_welcome_matomo">ساعد متطوعين Open Food Facts لتطوير التطبيق. لديك قرار في إرسال تحليلات مجهولة. إذا غيرت رأيك، هذا الخيار يمكن تمكينه وتعطيله في أي وقت من الإعدادات.</string>
+    <string name="hint_category_list">Search for a food category</string>
 </resources>

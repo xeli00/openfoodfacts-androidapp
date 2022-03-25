@@ -482,6 +482,7 @@
     <string name="notify_channel_description">Notification to show exported file\'s location</string>
     <string name="products_to_be_completed">Products to be completed</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Product added on %1$s at %2$s CET by %3$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Last edit of product page on %1$s at %2$s CEST by %3$s </string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">Product page also edited by </string>
     <string name="product_states">Product States</string>
@@ -503,6 +504,7 @@
     <string name="trouble_scanning">不能掃描？</string>
     <string name="barcode_hint">不能掃描？輸入條碼</string>
     <string name="switch_camera">切換相機</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">自動對焦</string>
     <string name="initial_loading">初步載入</string>
     <string name="OFFlogo">Open Food Facts標誌</string>
@@ -760,4 +762,5 @@
     <string name="msg_welcome_ecoscore">A synthesis of the environmental impact of your food.</string>
     <string name="title_welcome_matomo">Send anonymous analytics</string>
     <string name="msg_welcome_matomo">Help the Open Food Facts volunteers to improve the app. You decide if you send anonymous analytics.\n\nIf you change your mind this option can be enabled and disabled at any time from the settings.</string>
+    <string name="hint_category_list">Search for a food category</string>
 </resources>

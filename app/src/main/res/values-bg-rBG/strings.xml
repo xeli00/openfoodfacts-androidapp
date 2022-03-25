@@ -179,7 +179,7 @@
     <string name="txtSignIn">Вход</string>
     <string name="txtSalt">Сол</string>
     <string name="txtFat">Мазнини</string>
-    <string name="txtSugars">Захар</string>
+    <string name="txtSugars">Захари</string>
     <string name="hintBarcode">Баркод</string>
     <string name="txtNutriScoreInfo">Научи повече за нивата на хранителните стойности</string>
     <string name="txtloginHelper">Ако имаш акаунт в Open Food Facts, можеш да влезеш тук с него</string>
@@ -266,13 +266,13 @@
     <string name="nutrition_energy_kj">Енергия в джаули (kJ)</string>
     <string name="nutrition_energy_short_name">Енергия</string>
     <string name="nutrition_fat">Мазнини</string>
-    <string name="nutrition_fiber">Хранителни влакна</string>
+    <string name="nutrition_fiber">Влакнини</string>
     <string name="nutrition_header">Хранителни стойности</string>
     <string name="nutrition_proteins">Белтъци</string>
     <string name="nutrition_salt">Сол</string>
     <string name="nutrition_satured_fat">Наситени мазнини</string>
     <string name="nutrition_sodium">Натрий</string>
-    <string name="nutrition_sugars">Захар</string>
+    <string name="nutrition_sugars">Захари</string>
     <string name="nutrition_trans_fat">Транс-мазнини</string>
     <string name="nutriment_serving_size">За порция : </string>
     <string name="action_manage_account">Управление на профил</string>
@@ -369,7 +369,7 @@
     <string name="nova_grp1_msg">Група 1 - Непреработени или минимално преработени храни</string>
     <string name="nova_grp2_msg">Група 2 - Преработени кулинарни съставки</string>
     <string name="nova_grp3_msg">Група 3 - Преработени храни</string>
-    <string name="nova_grp4_msg">Група 4 - Екстремно преработени храни и напитки</string>
+    <string name="nova_grp4_msg">Група 4 - Свръхпреработени храни и напитки</string>
     <!-- String related to App Shortcuts -->
     <string name="disabled_message">Не е налице пряк път.</string>
     <string name="scan_shortcut_short_label">Сканирай</string>
@@ -423,9 +423,9 @@
     <string name="preference_crash_title">Докладване за срив</string>
     <string name="preference_crash_summary">Когато е активирано, докладите за сривове ще се изпращат автоматично до сървъра на Open Food Facts, за да можем да коригираме грешки и да подобрим приложението.</string>
     <string name="preference_analytics_title">Изпращане на анонимни данни</string>
-    <string name="preference_analytics_summary">When enabled, some anonymous information regarding app usage will be sent to the Open Food Facts servers, so that we can understand how and how much features are used in order to improve them.</string>
+    <string name="preference_analytics_summary">Когато е активирано, известна анонимна информация относно използването на приложението ще бъде изпратена до сървърите на Open Food Facts, за да можем да разберем как и колко функции се използват, за да ги подобрим.</string>
     <string name="preference_analytics_bottom_sheet_title">Изпращане на анонимни данни</string>
-    <string name="preference_analytics_bottom_sheet_description">Help improve Open Food Facts by letting us know how you use it. Data collected is anonymous. This option can be disabled at any time in the settings section.</string>
+    <string name="preference_analytics_bottom_sheet_description">Помогни за подобряването на Open Food Facts, като ни уведомиш как ги използваш. Събраните данни са анонимни. Тази опция може да бъде деактивирана по всяко време в секцията с настройки.</string>
     <string name="preference_analytics_bottom_sheet_grant_button">Разреши</string>
     <string name="preference_analytics_bottom_sheet_decline_button">Откажи</string>
     <string name="scan_first_string">Историята на продуктите които си видял/а ще се покажат тук. \n Тази история е само за теб и се съхранява локално.</string>
@@ -487,6 +487,7 @@
     <string name="notify_channel_description">Уведомление за показване на местоположението на изнесения файл</string>
     <string name="products_to_be_completed">Продукти за завършване</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Продукт добавен в %1$s на %2$s CET от %3$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Последна редакция на страницата на продукта в %1$s на %2$s CEST от %3$s</string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">Страницата на продукта е редактирана също от </string>
     <string name="product_states">Product States</string>
@@ -509,6 +510,7 @@
     <string name="trouble_scanning">Проблем със сканирането?</string>
     <string name="barcode_hint">Проблем със сканирането? Въведи баркода</string>
     <string name="switch_camera">Превключване на камера</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">Автофокусиране</string>
     <string name="initial_loading">Първоначално зареждане</string>
     <string name="OFFlogo">Open Food Facts лого</string>
@@ -544,15 +546,15 @@
     <string name="packaging">Рециклиране</string>
     <string name="take_ingredients_picture_to_extract">(Моля, направи снимка на съставките, за да ги извлечеш автоматично)</string>
     <string name="ingredients_list">Списък на съставките</string>
-    <string name="ingredients_hint" tools:ignore="StringFormatInvalid">Запазете поръчката, посочете % (процент), когато е нужно, отделете със , (запетая) или използвайте - (тире), използвайте () (скоби) за подсъставките на дадена съставка, оградете алергените с _ (долна черта)</string>
+    <string name="ingredients_hint" tools:ignore="StringFormatInvalid">Спазвай реда, посочи % (процент), когато е посочено, отдели със, (запетая) или използвай - (тире), използвай () (скоби) за подсъставките на дадена съставка, огради алергените с _ (долна черта)</string>
     <string name="extract_ingredients">Извлечи съставките</string>
     <string name="extracting_ingredients">Извличане на съставките</string>
     <string name="looksGood">Изглежда добре</string>
     <string name="skip_ingredients">\"Не изглежда добре \n
 Пропускане на съставките\"</string>
     <string name="traces">Следи</string>
-    <string name="traces_hint">\"Посочете съставки от коментари като \"Може да съдържат следи от\", \"Произведени в завод, който също използва\" и т.н. 
-Приложения: Мляко, глутен, ядки\"</string>
+    <string name="traces_hint">\"Посочи съставките от коментари като \"Може да съдържа следи от\", \"Произведени в завод, който също използва\" и т. н. 
+Примери: Суроватка, глутен, ядки\"</string>
     <string name="nutrition_facts_not_specified">Хранителните стойности не са посочени върху продукта.</string>
     <string name="nutrition_facts_picture">Снимка на хранителните стойности</string>
     <string name="front_short_picture">Отпред</string>
@@ -586,7 +588,7 @@
     <string name="edit_ingredients_image">Редактирай снимката на съставките</string>
     <string name="edit_other_image">Редактирай снимката</string>
     <string name="sign_in_to_edit">Моля, влез, за да редактираш продукт.</string>
-    <string name="sign_in_to_answer">Please sign in or register to answer an insight.</string>
+    <string name="sign_in_to_answer">Моля, влез или се регистрирай, за да отговориш на информация.</string>
     <string name="hint_quantity">Примери: 2 l, 250 g, 1 kg, 25 cl</string>
     <string name="edit_product_title">Редактирай продукт</string>
     <string name="save_edits">Запази редакциите</string>
@@ -634,7 +636,7 @@
     <string name="set_ingredient_img">Set as ingredients image</string>
     <string name="set_img_nutrients">Set as nutrition image</string>
     <string name="set_img_front">Set as front image</string>
-    <string name="set_img_recycling">Set Image as Recycling</string>
+    <string name="set_img_recycling">Задай снимката като рециклиране</string>
     <string name="report_img">Докладвай снимка</string>
     <string name="detected_ingredients">Открити съставки</string>
     <string name="txtConnectionError">Не можахме да изтеглим определени данни. Това може да се дължи на грешка при връзката.</string>
@@ -653,12 +655,12 @@
     <string name="txt_discard">Отказ</string>
     <string name="txt_info_eaten_products">You\'ll be able to add product to this list by scanning products, dragging the product card up and tapping on \"Products to buy\".
         You\'ll also be able to add products to this list by searching them and clicking on the + button in the top right of the product page.</string>
-    <string name="txt_info_your_listed_products">You\'ll be able to add products to this list by searching them and clicking on the + button in the top right of the product page.</string>
+    <string name="txt_info_your_listed_products">Ще можеш да добавяш продукти към този списък, като ги търсиш и щракнеш върху бутона + в горния десен ъгъл на страницата с продукти.</string>
     <string name="import_csv_to_list">Import an Open Food Facts list CSV file</string>
     <string name="toast_import_csv_error">Error in importing CSV file</string>
     <string name="toast_import_csv">CSV imported successfully!</string>
     <string name="txt_no_nutrition_data">This product doesn\'t have any nutrition information on the packaging. If this has changed, you can edit the product.</string>
-    <string name="swipe_delete_tip">You can delete a list by swiping it left.</string>
+    <string name="swipe_delete_tip">Можеш да изтриеш списък, като го плъзнеш наляво.</string>
     <!-- Used for diets AddOn -->
     <string name="empty"></string>
     <string name="add_product">Добави продукти</string>
@@ -706,7 +708,7 @@
     <string name="ingredients_in_this_product_are">Съставките в този продукт са %1$s.</string>
     <string name="ingredients_in_this_product">Съставки в този продукт, които са %1$s:</string>
     <string name="display_analysis_tag_status" comment="Do not change the placeholder">Display %1$s status</string>
-    <string name="unknown_status_no_translation">We couldn\'t assess the status of the product due to unrecognized ingredients.</string>
+    <string name="unknown_status_no_translation">Не можахме да оценим състоянието на продукта заради неразпознати съставки.</string>
     <string name="help_translate_ingredients">Помогни за превода на съставките на твоя език</string>
     <string name="unknown_status_missing_ingredients">We couldn\'t assess the status of the product due to missing ingredients.</string>
     <string name="unknown_status_ambiguous_ingredients">Не можахме да оценим статуса на продукта заради двусмислени съставки: <![CDATA[<b>%1$s</b>]]></string>
@@ -716,7 +718,7 @@
     <string name="compare_brands">Марки :</string>
     <string name="compare_additives">Добавки :</string>
     <string name="compare_salt">Сол</string>
-    <string name="compare_sugars">Захар</string>
+    <string name="compare_sugars">Захари</string>
     <string name="compare_saturated_fat">Наситени мазнини</string>
     <string name="compare_fat">Мазнини</string>
     <string name="compare_quantity">Количество:</string>
@@ -725,7 +727,7 @@
     <string name="white_check_image_descr">A white check</string>
     <string name="hint_packaging">Примери: пластмаса, хартия, стъкло</string>
     <string name="hint_trace_code">Примери: EMB 23456, FR 23.345.34 CE</string>
-    <string name="risk_alcohol_consumption">Excessive consumption of alcohol is harmful to health, to be consumed in moderation</string>
+    <string name="risk_alcohol_consumption">Прекомерната консумация на алкохол е вредна за здравето, трябва да се консумира умерено</string>
     <!--ShowcaseView Strings-->
     <string name="title_image_type">Select Image Type</string>
     <string name="content_image_type">Choose the photo to work on</string>
@@ -768,4 +770,5 @@
     <string name="msg_welcome_ecoscore">Обобщение на въздействието на твоята храна върху околната среда.</string>
     <string name="title_welcome_matomo">Анонимно споделяне на статистики</string>
     <string name="msg_welcome_matomo">Помогни на доброволците на Open Food Facts да подобрят приложението. Ти решаваш дали да изпращаш анонимни статистики.\n\nАко промениш решението си, тази опция може да бъде активирана и деактивирана по всяко време от настройките.</string>
+    <string name="hint_category_list">Търсене на категория храни</string>
 </resources>

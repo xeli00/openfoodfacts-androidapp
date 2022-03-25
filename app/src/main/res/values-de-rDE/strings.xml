@@ -39,7 +39,7 @@
     <string name="action_discover">Entdecken</string>
     <string name="contribute">Wie Sie mithelfen können</string>
     <string name="action_find">Suchen</string>
-    <string name="product_incomplete_message">Unvollständige Produktinformationen. Deshalb konnten wir die Allergenprüfung nicht durchführen.</string>
+    <string name="product_incomplete_message">Die Zutatenliste dieses Produkts ist nicht vollständig. Daher wird der Allergenalarm nicht angezeigt.</string>
     <string name="product_allergen_prompt">Dieses Produkt enthält:</string>
     <string name="no_offline_data">Alles erledigt</string>
     <!-- Image Upload -->
@@ -483,6 +483,7 @@
     <string name="notify_channel_description">Benachrichtigung, um den Speicherort der exportierten Dateien anzuzeigen</string>
     <string name="products_to_be_completed">Noch abzuschließende Produkte</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Produkt hinzugefügt am %1$s um %2$s MEZ durch %3$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Letzte Änderung der Produktseite am %1$s um %2$s MESZ durch %3$s </string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">Produktseite auch bearbeitet von </string>
     <string name="product_states">Produktdaten</string>
@@ -505,6 +506,7 @@
     <string name="trouble_scanning">Probleme beim Einlesen?</string>
     <string name="barcode_hint">Probleme beim Einlesen? Strichcode eingeben</string>
     <string name="switch_camera">Kamera wechseln</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">Autofokus</string>
     <string name="initial_loading">Erstes Laden</string>
     <string name="OFFlogo">Logo von Open Food Facts</string>
@@ -762,4 +764,5 @@ Sie können außerdem Produkte zu dieser Liste hinzufügen, indem Sie sie durchs
     <string name="msg_welcome_ecoscore">Eine Übersicht über die Umweltauswirkungen Ihrer Lebensmittel.</string>
     <string name="title_welcome_matomo">Anonymisierte Analysedaten senden</string>
     <string name="msg_welcome_matomo">Helfen Sie den Freiwilligen von Open Food Facts, die App zu verbessern. Sie entscheiden, ob Sie anonymisierte Analysedaten senden möchten.\n\nWenn Sie Ihre Meinung ändern, kann diese Option jederzeit in den Einstellungen geändert werden.</string>
+    <string name="hint_category_list">Nach einer Nahrungsmittelkategorie suchen</string>
 </resources>

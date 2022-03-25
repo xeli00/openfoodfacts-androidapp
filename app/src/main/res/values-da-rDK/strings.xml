@@ -487,6 +487,7 @@
     <string name="notify_channel_description">Notifikation for at vise eksporterede fils placering</string>
     <string name="products_to_be_completed">Produkter, som skal færdiggøres</string>
     <string name="creator_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Produkt tilføjetd. %1$s kl. %2$s CET af %3$s</string>
+    <string name="last_editor_history" comment="Do not modify the placeholders, and make sure all of them are present in the translation.">Seneste redigering af produktside d. %1$s kl. %2$s CEST by %3$s</string>
     <!-- TODO: Add the placeholder in the string - important for several languages -->
     <string name="other_editors">Produktside også redigeret af </string>
     <string name="product_states">Product States</string>
@@ -509,6 +510,7 @@
     <string name="trouble_scanning">Skanningsproblemer?</string>
     <string name="barcode_hint">Skanningsproblemer? Angiv stregkoden</string>
     <string name="switch_camera">Skift kamera</string>
+    <string name="toggle_flash">Toggle flash</string>
     <string name="autofocus">Autofokus</string>
     <string name="initial_loading">Indledende indlæsning</string>
     <string name="OFFlogo">Open Food Facts logo</string>
@@ -766,4 +768,5 @@
     <string name="msg_welcome_ecoscore">En syntese af din mads miljøpåvirkning.</string>
     <string name="title_welcome_matomo">Indsend anonyme analysedata</string>
     <string name="msg_welcome_matomo">Hjælp OFF-frivillige med at forbedre appen. Du kan tillade indsendelse af anonyme analysdata\n\nDette kan når som helst aktiveres/deaktiveres via indstillingerne.</string>
+    <string name="hint_category_list">Søg efter en fødevarekategori</string>
 </resources>
