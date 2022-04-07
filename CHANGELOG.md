@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.9.0](https://github.com/openfoodfacts/openfoodfacts-androidapp/compare/v3.8.1...v3.9.0) (2022-04-07)
+
+
+### Features
+
+* Automatically label issues ([#4524](https://github.com/openfoodfacts/openfoodfacts-androidapp/issues/4524)) ([c46bc42](https://github.com/openfoodfacts/openfoodfacts-androidapp/commit/c46bc42030ec8f1cf184f762ef4fe9d97893c768))
+* The Activity now notifies when the drawer status has changed ([#4560](https://github.com/openfoodfacts/openfoodfacts-androidapp/issues/4560)) ([ef12188](https://github.com/openfoodfacts/openfoodfacts-androidapp/commit/ef12188100cd6478c1de391b88695619f43cc4de))
+
+
+### Bug Fixes
+
+* change default name for lists ([#4616](https://github.com/openfoodfacts/openfoodfacts-androidapp/issues/4616)) ([7b56644](https://github.com/openfoodfacts/openfoodfacts-androidapp/commit/7b56644fb2df46c13b2a398d5d08dbfc2d35b853))
+* NPE ([d54533f](https://github.com/openfoodfacts/openfoodfacts-androidapp/commit/d54533fb10b40e151e149b8964def5f98b189186))
+* NPE for null binding ([#4629](https://github.com/openfoodfacts/openfoodfacts-androidapp/issues/4629)) ([c4eaba8](https://github.com/openfoodfacts/openfoodfacts-androidapp/commit/c4eaba8adbdf1400068d63cb44cb82ff3036683e))
+* NPE in ProductCompareAdapter ([#4631](https://github.com/openfoodfacts/openfoodfacts-androidapp/issues/4631)) ([7ef7b94](https://github.com/openfoodfacts/openfoodfacts-androidapp/commit/7ef7b94eb290cdc31e07a54b02400e914217037e))
+* Useless swipe to refresh with an empty product ([#4608](https://github.com/openfoodfacts/openfoodfacts-androidapp/issues/4608)) ([4befba4](https://github.com/openfoodfacts/openfoodfacts-androidapp/commit/4befba444ea6ff3d3df4813e7aa50a73d6c29970))
+
 ## [3.8.0](https://github.com/openfoodfacts/openfoodfacts-androidapp/compare/v3.7.0...v3.8.0) (2022-02-09)
 
 
